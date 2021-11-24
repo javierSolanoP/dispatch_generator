@@ -13,12 +13,10 @@
     <section>
         <article>
             <div class="container-left">
-                {{-- <img src="images/welcome.svg" alt="Ilustracion de bienvenida"> --}}
                 <h1>MODULO ADMINISTRADOR</h1>
             </div>
             <div class="container-right">
-                
-                <form action="{{ route('dashboard') }}" method="POST">
+                <form action="{{ route('home') }}" method="POST">
                     @csrf
                     <div class="container-input">
                         <label for="user">Usuario</label>
@@ -30,6 +28,13 @@
                     </div>
                     <input type="submit" value="Ingresar">
                 </form>
+                <br>
+              @if(isset($error))
+                  <div class="error">
+                      <h2>{{ $error }}</h2>
+                  </div>
+              @endif
+
             </div>
         </article>
     </section>

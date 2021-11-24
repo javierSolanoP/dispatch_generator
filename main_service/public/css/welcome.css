@@ -115,3 +115,18 @@ form input[type="submit"]{
 form input[type="submit"]:hover {
     background-color: rgba(132, 167, 121, 0.8)
 }
+
+.error{
+    width: 90%;
+    height: 8%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border:none;
+    border-radius: 1rem;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.error h2{
+    color: red;
+}

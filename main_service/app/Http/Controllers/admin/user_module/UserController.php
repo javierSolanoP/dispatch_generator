@@ -63,24 +63,28 @@ class UserController extends Controller
                 if(($statusSession == 'Activa') || ($statusSession == 'Inactiva')){
 
                     // Redirigimos al usuario a la vista de dashboard y enviamos sus datos a la vista: 
-                    $data = ['name' => $validateUser->name, 'status' => $validateUser->status];
+                    $data = ['name' => $validateUser->name, 'status' => $validateUser->status, 'role' => $validateUser->role];
                     return ['login' => true, 'user' => $data];
 
                 }else{
 
                     // Redirigimos al usuario a la vista principal e imprimimos el error en pantalla: 
                     $error = 'Usted solicitó un restablecimiento de contraseña';
-                    return route('/', ['error', $error]);
+                    return view('welcome', ['error' => $error]); redirect('/');
                 }
 
-
-                return "Ingresado satisfactoriamente";
             }else{
-                return "Contrasenia incorrecta";
+
+                // Redirigimos al usuario a la vista principal e imprimimos el error en pantalla: 
+                $error = 'Contraseña incorrecta';
+                return view('welcome', ['error' => $error]); redirect('/');
             }
 
         }else{
-            return "No existe ese usuario en el sistema.";
+
+            // Redirigimos al usuario a la vista principal e imprimimos el error en pantalla: 
+            $error = 'No existe ese usuario en el sistema.';
+            return view('welcome', ['error' => $error]); redirect('/');
         }
     }
 
