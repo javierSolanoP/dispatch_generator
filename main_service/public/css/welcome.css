@@ -1,0 +1,117 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+body{
+    width: 100vw;
+    height: 100vh;
+}
+
+section{
+    width: 100%;
+    height: 100%;
+    background-image: url('../images/background-welcome.jpg');
+    /* background-color: rgba(253, 196, 43, 0.5); */
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+article{
+    width: 80%;
+    height: 60%;
+    display: flex;
+}
+
+.container-left{
+    width: 50%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 
+.container-left img {
+    width: 90%;
+    height: 90%;
+} */
+
+.container-right {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.container-left h1 {
+    color: burlywood;
+    font-size: 330%;
+    width: 90%;
+    text-align: center;
+}
+
+.container-right form {
+    width: 80%;
+    height: 60%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 1rem;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 5%;
+}
+
+form .container-input{
+    width: 100%;
+    height: 25%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.container-input label{
+    text-align: center;
+    color: #84A779;
+    width: 100%;
+    height: 50%;
+    font-size: 150%;
+}
+
+.container-input input[type="text"],
+.container-input input[type="password"] {
+    width: 80%;
+    height: 50%;
+    /* color: rgba(132, 167, 121, 0.5); */
+    padding-left: 3%;
+    font-size: 120%;
+    border-radius: 10rem;
+    border: none;
+    background-color: rgba(255, 255, 255, 0.7);
+}
+
+::placeholder{
+    font-style: italic;
+}
+
+form input[type="submit"]{
+    width: 80%;
+    height: 15%;
+    border: none;
+    border-radius: 10rem;
+    color: #fff;
+    cursor: pointer;
+    font-size: 120%;
+    background-color: rgba(132, 167, 121, 0.5)
+}
+
+form input[type="submit"]:hover {
+    background-color: rgba(132, 167, 121, 0.8)
+}

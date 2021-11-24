@@ -23,12 +23,14 @@ class CreateUsersTable extends Migration
             $table->string('user_name', 50)->unique()->index();
             $table->string('password');
             $table->unsignedBigInteger('role_id');
+            $table->unsignedBigInteger('session_id');
             $table->foreign('role_id')->references('id_role')->on('roles');
+            $table->foreign('session_id')->references('id_session')->on('sessions');
             $table->timestamps();
         });
 
         Schema::table('users', function (Blueprint $table) {
-            DB::insert('insert into users (identification, name, last_name, email, user_name, password, role_id) values (?, ?, ?, ?, ?, ?, ?)', ['0123456879', 'Admin', 'TIC', 'tic@terminalpopayan.com', 'root', '$2y$10$JrHmRIxd8Uzjfq5xchNZu.xbs1ChvRLSwfgP5Ttm.7liQl4RJ2t7u', 1]);
+            DB::insert('insert into users (identification, name, last_name, email, user_name, password, role_id, session_id) values (?, ?, ?, ?, ?, ?, ?, ?)', ['0123456879', 'Admin', 'TIC', 'tic@terminalpopayan.com', 'root', '$2y$10$JrHmRIxd8Uzjfq5xchNZu.xbs1ChvRLSwfgP5Ttm.7liQl4RJ2t7u', 1, 2]);
         });
 
     }
