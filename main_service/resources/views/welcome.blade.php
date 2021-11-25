@@ -7,13 +7,14 @@
 
     <!-- Styles -->
     <link rel="stylesheet" href="css/welcome.css">
-    <title>API Parking</title>
+    <title>@include('components/title')</title>
 </head>
 <body>
+    @yield('content')
     <section>
         <article>
             <div class="container-left">
-                <h1>MODULO ADMINISTRADOR</h1>
+                <h1>MODULO ADMINISTRADOR @yield('content')</h1>
             </div>
             <div class="container-right">
                 <form action="{{ route('home') }}" method="POST">

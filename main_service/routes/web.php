@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\admin\dashboard\DashBoardController;
 use App\Http\Controllers\admin\user_module\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -14,8 +15,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
-
+// Login: 
+Route::get('/', [UserController::class, 'index'])->name('home');
 Route::post('/', [UserController::class, 'store'])->name('home');
+
+// Dashboard: 
+Route::get('/dashboard', [DashBoardController::class, 'index'])->name('dashboard');

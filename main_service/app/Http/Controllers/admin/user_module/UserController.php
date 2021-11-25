@@ -4,87 +4,96 @@ namespace App\Http\Controllers\admin\user_module;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+
+session_start();
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
-        
+        // Si no existe un estado de sesion, retornamos la vista principal:
+        if(isset($_SESSION['status'])){
+
+            // Si el estado de la sesion es 'Activa', redirigimos directamente a la ruta 'dashboard': 
+            if($_SESSION['status'] == 'Activa'){
+
+                // Regirigimos: 
+                return redirect()->route('dashboard');
+            }
+
+        }else{
+            // Retornamos la vista principal: 
+            return view('welcome');
+        }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-        // Realizamos la consulta a la entidad de la DB: 
-        $model = DB::table('users')
-                    ->join('roles', 'roles.id_role', '=', 'users.role_id')
-                    ->join('sessions', 'sessions.id_session', '=', 'users.session_id')
-                    ->select('users.user_name', 'users.password', 'users.name', 'users.last_name', 'users.password','roles.name as role', 'sessions.type_of_session as status')
-                    ->where('user_name', $request->input('user'));
+        try{
+            // Realizamos la consulta a la entidad de la DB: 
+            $model = DB::table('users')
+                        ->join('roles', 'roles.id_role', '=', 'users.role_id')
+                        ->join('sessions', 'sessions.id_session', '=', 'users.session_id')
+                        ->select('users.user_name', 'users.password', 'users.name', 'users.last_name', 'users.password','roles.name as role', 'sessions.type_of_session as status')
+                        ->where('user_name', $request->input('user'));
 
-        // Validamos que exista el usuario en la DB: 
-        $validateUser = $model->first();
+            // Validamos que exista el usuario en la DB: 
+            $validateUser = $model->first();
 
-        // Si existe, validamos el hash con la password ingresada: 
-        if($validateUser){
-            
-            // Verificamos el hash: 
-            $verifyPassword = password_verify($request->input('password'), $validateUser->password);
+            // Si existe, validamos el hash con la password ingresada: 
+            if($validateUser){
 
-            // Si coincide, validamos el estado de sesion: 
-            if($verifyPassword){
+                // Verificamos el hash: 
+                $verifyPassword = password_verify($request->input('password'), $validateUser->password);
 
-                // Declaramos la variable 'statusSession' con el estado de sesion: 
-                $statusSession = $validateUser->status;
+                // Si coincide, validamos el estado de sesion: 
+                if($verifyPassword){
 
-                // Si el estado de la sesion es 'Activa' o 'Inactiva', concedemos acceso al sistema: 
-                if(($statusSession == 'Activa') || ($statusSession == 'Inactiva')){
+                    // Declaramos la variable 'statusSession' con el estado de sesion: 
+                    $statusSession = $validateUser->status;
 
-                    // Redirigimos al usuario a la vista de dashboard y enviamos sus datos a la vista: 
-                    $data = ['name' => $validateUser->name, 'status' => $validateUser->status, 'role' => $validateUser->role];
-                    return ['login' => true, 'user' => $data];
+                    // Si el estado de la sesion es 'Activa' o 'Inactiva', concedemos acceso al sistema: 
+                    if(($statusSession == 'Activa') || ($statusSession == 'Inactiva')){
+
+                        // Si el estado de la sesion es 'Activa': 
+                        if($statusSession == 'Activa'){
+                            // Asignamos la sesion 'status', para que el usuario no deba autenticarse de nuevo: 
+                            $_SESSION['status'] = $statusSession;
+                        }
+
+                        // Redirigimos al usuario a la vista de dashboard y enviamos sus datos a la vista: 
+                        $user_name = $validateUser->user_name;
+                        
+                        return redirect()->route('dashboard', ['view' => strrev($user_name)]);
+
+                    }else{
+
+                        // Redirigimos al usuario a la vista principal e imprimimos el error en pantalla: 
+                        $error = 'Usted solicitó un restablecimiento de contraseña';
+                        return view('welcome', ['error' => $error]);
+                    }
 
                 }else{
 
                     // Redirigimos al usuario a la vista principal e imprimimos el error en pantalla: 
-                    $error = 'Usted solicitó un restablecimiento de contraseña';
-                    return view('welcome', ['error' => $error]); redirect('/');
+                    $error = 'Contraseña incorrecta';
+                    return view('welcome', ['error' => $error]);
                 }
 
             }else{
 
                 // Redirigimos al usuario a la vista principal e imprimimos el error en pantalla: 
-                $error = 'Contraseña incorrecta';
-                return view('welcome', ['error' => $error]); redirect('/');
+                $error = 'No existe ese usuario en el sistema.';
+                return view('welcome', ['error' => $error]);
             }
-
-        }else{
-
-            // Redirigimos al usuario a la vista principal e imprimimos el error en pantalla: 
-            $error = 'No existe ese usuario en el sistema.';
-            return view('welcome', ['error' => $error]); redirect('/');
+        }catch(Exception $e){
+            // Redirigimos a la vista de error '500': 
+            return view('error.500');
         }
     }
 
