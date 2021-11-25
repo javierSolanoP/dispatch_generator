@@ -7,6 +7,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
+session_start();
+
 class DashBoardController extends Controller
 {
     /**
@@ -16,9 +18,17 @@ class DashBoardController extends Controller
      */
     public function index()
     {
-        if(isset($_GET['view'])){
-            $data = $_GET['view'];
-            return $data;
+        // Si existe el parametro, lo enviamos a la vista 'dashboard':
+        if(isset($_SESSION['user'])){
+            // Asignamos el argumento del parametro a la variable 'data': 
+            $data = $_SESSION['user'];
+
+            // Retornamos la vista 'dashboard': 
+            return view('dashboard.dashboard', ['data' => $data]);
+
+        }else{
+            // Retornamos la vista 'dashboard': 
+            return view('dashboard.dashboard');
         } 
     }
 

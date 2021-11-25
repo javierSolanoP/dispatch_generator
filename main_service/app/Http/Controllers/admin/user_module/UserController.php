@@ -7,7 +7,6 @@ use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
 
 session_start();
 
@@ -24,6 +23,9 @@ class UserController extends Controller
 
                 // Regirigimos: 
                 return redirect()->route('dashboard');
+            }else{
+                // Retornamos la vista principal: 
+                return view('welcome');
             }
 
         }else{
@@ -57,19 +59,56 @@ class UserController extends Controller
                     // Declaramos la variable 'statusSession' con el estado de sesion: 
                     $statusSession = $validateUser->status;
 
+                    // ESTADOS: 
+                    static $active = 'Activa';
+                    static $inactive = 'Inactiva';
+
                     // Si el estado de la sesion es 'Activa' o 'Inactiva', concedemos acceso al sistema: 
-                    if(($statusSession == 'Activa') || ($statusSession == 'Inactiva')){
+                    if(($statusSession == $active) || ($statusSession == $inactive)){
 
                         // Si el estado de la sesion es 'Activa': 
-                        if($statusSession == 'Activa'){
+                        if($statusSession == $active){
+
                             // Asignamos la sesion 'status', para que el usuario no deba autenticarse de nuevo: 
                             $_SESSION['status'] = $statusSession;
-                        }
 
-                        // Redirigimos al usuario a la vista de dashboard y enviamos sus datos a la vista: 
-                        $user_name = $validateUser->user_name;
+                            // Redirigimos al usuario a la vista de dashboard y enviamos sus datos a la vista: 
+                            $_SESSION['user'] = $validateUser->user_name;
+                            
+                        }else{
+
+                            // Instanciamos el controlador del modelo 'Session', para obtener el 'id' de la sesion:
+                            $sessionController = new SessionController;
+
+                            // Consultamos el estado de sesion 'Activa' en el controlador: 
+                            $session = $sessionController->show($active);
+
+                            // Obtenemos el 'id' del estado: 
+                            $id_session = $session['session']['id_session'];
+
+                            // Actualizamos el estado de la sesion: 
+                            try{
+
+                                User::where('user_name', $request->input('user'))
+                                    ->update([
+                                        'session_id' => $id_session
+                                    ]);
+
+                                // Asignamos la sesion 'status', para que el usuario no deba autenticarse de nuevo: 
+                                $_SESSION['status'] = $active;
+
+                                // Redirigimos al usuario a la vista de dashboard y enviamos sus datos a la vista: 
+                                $_SESSION['user'] = $validateUser->user_name;
+
+                            }catch(Exception $e){
+                                // Retornamos el error: 
+                                return 
+                                $e->getMessage();
+                            }
+                        }
                         
-                        return redirect()->route('dashboard', ['view' => strrev($user_name)]);
+                        // Redirigimos a la vista del 'dashboard': 
+                        return redirect()->route('dashboard');
 
                     }else{
 
@@ -93,7 +132,9 @@ class UserController extends Controller
             }
         }catch(Exception $e){
             // Redirigimos a la vista de error '500': 
-            return view('error.500');
+            // return view('error.500');
+            return 
+            $e->getMessage();
         }
     }
 

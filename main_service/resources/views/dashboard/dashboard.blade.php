@@ -7,9 +7,8 @@
     <title>@include('components/title')</title>
 </head>
 <body>
-    {{-- <?php 
-        $data = $_GET['data'];
-        echo $data;
-    ?> --}}
+    @if (isset($data))
+        {{ $data }}
+    @endif
 </body>
 </html>
