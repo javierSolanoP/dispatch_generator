@@ -41,7 +41,7 @@ class UserController extends Controller
             $model = DB::table('users')
                         ->join('roles', 'roles.id_role', '=', 'users.role_id')
                         ->join('sessions', 'sessions.id_session', '=', 'users.session_id')
-                        ->select('users.user_name', 'users.password', 'users.name', 'users.last_name', 'users.password','roles.name as role', 'sessions.type_of_session as status')
+                        ->select('users.user_name', 'users.password', 'users.name', 'users.last_name', 'users.password', 'users.avatar', 'roles.name as role', 'sessions.type_of_session as status')
                         ->where('user_name', $request->input('user'));
 
             // Validamos que exista el usuario en la DB: 
@@ -66,6 +66,9 @@ class UserController extends Controller
                     // Si el estado de la sesion es 'Activa' o 'Inactiva', concedemos acceso al sistema: 
                     if(($statusSession == $active) || ($statusSession == $inactive)){
 
+                        // Asignamos un array 'data', que alamcena la informaccion que se envia a la sesion 'user': 
+                        $data = ['name' => $validateUser->name, 'last_name' => $validateUser->last_name, 'avatar' => $validateUser->avatar];
+
                         // Si el estado de la sesion es 'Activa': 
                         if($statusSession == $active){
 
@@ -73,7 +76,7 @@ class UserController extends Controller
                             $_SESSION['status'] = $statusSession;
 
                             // Redirigimos al usuario a la vista de dashboard y enviamos sus datos a la vista: 
-                            $_SESSION['user'] = $validateUser->user_name;
+                            $_SESSION['user'] = $data;
                             
                         }else{
 
@@ -98,12 +101,12 @@ class UserController extends Controller
                                 $_SESSION['status'] = $active;
 
                                 // Redirigimos al usuario a la vista de dashboard y enviamos sus datos a la vista: 
-                                $_SESSION['user'] = $validateUser->user_name;
+                                $_SESSION['user'] = $data;
 
                             }catch(Exception $e){
-                                // Retornamos el error: 
-                                return 
-                                $e->getMessage();
+
+                                // Redirigimos a la vista de error '500': 
+                                return view('error.500');
                             }
                         }
                         
@@ -130,11 +133,11 @@ class UserController extends Controller
                 $error = 'No existe ese usuario en el sistema.';
                 return view('welcome', ['error' => $error]);
             }
+
         }catch(Exception $e){
+
             // Redirigimos a la vista de error '500': 
-            // return view('error.500');
-            return 
-            $e->getMessage();
+            return view('error.500');
         }
     }
 

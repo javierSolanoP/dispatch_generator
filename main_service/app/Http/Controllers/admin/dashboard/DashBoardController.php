@@ -11,25 +11,32 @@ session_start();
 
 class DashBoardController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    // Metodo para validar el estado de sesion: 
     public function index()
     {
-        // Si existe el parametro, lo enviamos a la vista 'dashboard':
-        if(isset($_SESSION['user'])){
-            // Asignamos el argumento del parametro a la variable 'data': 
-            $data = $_SESSION['user'];
+        // ESTADO: 
+        static $active = 'Activa';
 
-            // Retornamos la vista 'dashboard': 
-            return view('dashboard.dashboard', ['data' => $data]);
+        // Si existe el estado, lo enviamos a la vista 'dashboard':
+        if($_SESSION['status'] == $active){
+
+            if(isset($_SESSION['user'])){
+                // Asignamos el contenido de la sesion 'user' a la variable 'data': 
+                $data = $_SESSION['user'];
+    
+                // Retornamos la vista 'dashboard': 
+                return view('dashboard.dashboard', ['data' => $data]);
+    
+            }else{
+                // Retornamos la vista 'dashboard': 
+                return view('dashboard.dashboard');
+            } 
 
         }else{
-            // Retornamos la vista 'dashboard': 
-            return view('dashboard.dashboard');
-        } 
+
+            // Redirigimos a la vista principal porque no ha iniciado sesion: 
+            return redirect()->route('home');
+        }
     }
 
     /**
