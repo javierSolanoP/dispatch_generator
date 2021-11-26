@@ -17,7 +17,8 @@ use Illuminate\Support\Facades\Route;
 
 // Login: 
 Route::get('/', [UserController::class, 'index'])->name('home');
-Route::post('/', [UserController::class, 'store'])->name('home');
+Route::post('/login', [UserController::class, 'store'])->name('login');
 
 // Dashboard: 
 Route::get('/dashboard', [DashBoardController::class, 'index'])->name('dashboard');
+Route::get('/logout', [DashBoardController::class, 'logout'])->name('logout');

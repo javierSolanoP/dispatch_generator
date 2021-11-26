@@ -17,7 +17,7 @@
                 <h1>MODULO ADMINISTRADOR @yield('content')</h1>
             </div>
             <div class="container-right">
-                <form action="{{ route('home') }}" method="POST">
+                <form action="{{ route('login') }}" method="POST">
                     @csrf
                     <div class="container-input">
                         <label for="user">Usuario</label>

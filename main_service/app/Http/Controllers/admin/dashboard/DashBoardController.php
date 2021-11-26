@@ -2,18 +2,23 @@
 
 namespace App\Http\Controllers\admin\dashboard;
 
+use App\Http\Controllers\admin\user_module\UserController;
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
-
-session_start();
 
 class DashBoardController extends Controller
 {
+
+    // Metodo para inicializar una sesion: 
+    public function sessionStart(){
+        return session_start();
+    }
+
     // Metodo para validar el estado de sesion: 
     public function index()
     {
+        // $this->sessionStart();
+
         // ESTADO: 
         static $active = 'Activa';
 
@@ -21,6 +26,7 @@ class DashBoardController extends Controller
         if($_SESSION['status'] == $active){
 
             if(isset($_SESSION['user'])){
+
                 // Asignamos el contenido de la sesion 'user' a la variable 'data': 
                 $data = $_SESSION['user'];
     
@@ -37,16 +43,7 @@ class DashBoardController extends Controller
             // Redirigimos a la vista principal porque no ha iniciado sesion: 
             return redirect()->route('home');
         }
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        
     }
 
     /**
@@ -57,8 +54,7 @@ class DashBoardController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->input('data');
-        return json_decode( Http::post('https://jsonplaceholder.typicode.com/posts', ['data' => $data]));
+        
     }
 
     /**
@@ -72,37 +68,34 @@ class DashBoardController extends Controller
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
+    // Metodo para cerrar sesion: 
+    public function logout()
+    {       
+        // ESTADO: 
+        static $inactive = 'Inactiva';
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
+        // Asignamos a la variable 'user' el contenido de la sesion 'user': 
+        $user = $_SESSION['user'];
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        // Instanciamos el controlador del modelo 'User' para actualizar el estado de sesion: 
+        $userController = new UserController;
+
+        // Enviamos la solicitud al controlador: 
+        $logout = $userController->updateSession($user['user_name'], $inactive);
+
+        // Si se actualizó correctamente, redirigimos al usuario a la vista principal: 
+        if($logout['update']){
+
+            // Cambiamos el estado de la sesion: 
+            $_SESSION['status'] = $inactive;
+
+            // Redirigimos al usuario: 
+            return redirect()->route('home');
+
+        }else{
+
+            // Retornamos el error: 
+            return $logout;
+        }
     }
 }

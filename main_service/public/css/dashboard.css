@@ -62,8 +62,8 @@ ul li{
     text-decoration: none;
 }
 
-.container-avatar .logout{
-    width: 90%;
+nav form{
+    width: 80%;
     height: 5%;
     border: none;
     border-radius: 10rem;
@@ -73,12 +73,17 @@ ul li{
     align-items: center;
 }
 
-.logout img{
-    width: 30%;
+form img{
+    width: 20%;
     height: 80%;
 }
 
-.logout p{
-    width: 80%;
-    height: 50%;
+form input[type='submit']{
+    width: 65%;
+    height: 90%;
+    color: #fff;
+    font-size: 120%;
+    cursor: pointer;
+    border: none;
+    background-color: transparent;
 }

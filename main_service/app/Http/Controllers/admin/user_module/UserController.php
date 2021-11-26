@@ -3,12 +3,13 @@
 namespace App\Http\Controllers\admin\user_module;
 
 use App\Http\Controllers\Controller;
+use App\Models\Session;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-session_start();
+// session_start();
 
 class UserController extends Controller
 {
@@ -67,7 +68,7 @@ class UserController extends Controller
                     if(($statusSession == $active) || ($statusSession == $inactive)){
 
                         // Asignamos un array 'data', que alamcena la informaccion que se envia a la sesion 'user': 
-                        $data = ['name' => $validateUser->name, 'last_name' => $validateUser->last_name, 'avatar' => $validateUser->avatar];
+                        $data = ['user_name' => $validateUser->user_name, 'name' => $validateUser->name, 'last_name' => $validateUser->last_name, 'avatar' => $validateUser->avatar];
 
                         // Si el estado de la sesion es 'Activa': 
                         if($statusSession == $active){
@@ -163,16 +164,51 @@ class UserController extends Controller
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
+    // Metodo para actualizar el estado de sesion: 
+    public function updateSession($user_name, $status)
     {
-        //
+        // Realizamos la consulta a la DB: 
+        $modelUser = User::where('user_name', $user_name);
+
+        // Validamos que exista el registro en la entidad: 
+        $validateUser = $modelUser->first();
+
+        // Si existe, validamos que exista ese estado de sesion: 
+        if($validateUser){
+
+            // Realizamos la consulta a la DB:
+            $modelSession = Session::select('id_session')
+                                  ->where('type_of_session', $status);
+
+            // Validamos que exista el registro en la entidad: 
+            $validateSession = $modelSession->first();
+
+            // Si existe, actualizamos el estado de sesion: 
+            if($validateSession){
+
+                try{
+
+                    $modelUser->update([
+                        'session_id' => $validateSession['id_session']
+                    ]);
+
+                    // Retornamos la respuesta: 
+                    return ['update' => true];
+                        
+                }catch(Exception $e){
+                    // Retornamos el error: 
+                    return ['update' => false, 'error' => $e->getMessage()];
+                }
+
+            }else{
+                // Retornamos el error: 
+                return ['update' => false, 'error' => 'No existe ese estado de sesion.'];
+            }
+
+        }else{
+            // Retornamos el error: 
+            return ['update' => false, 'error' => 'No existe ese usuario en el sistema.'];
+        }
     }
 
     /**

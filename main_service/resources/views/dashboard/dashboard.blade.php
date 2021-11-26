@@ -23,10 +23,11 @@
             <li></li>
             <li></li>
         </ul>
-        <button class="logout">
+        <form action="{{route('logout')}}" method="GET">
+            @csrf
             <img src="images/salida.png" alt="Icono de cerrar sesion">
-            <p>Cerrar sesión</p>
-        </button>
+            <input type="submit" value="Cerrar sesión">
+        </form>
     </nav>
 </body>
 </html>
