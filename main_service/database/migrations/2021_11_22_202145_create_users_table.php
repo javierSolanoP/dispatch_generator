@@ -32,41 +32,39 @@ class CreateUsersTable extends Migration
             $table->timestamps();
         });
 
-        Schema::table('users', function (Blueprint $table) {
-            DB::insert('insert into users (
-                        identification, 
-                        name, 
-                        last_name, 
-                        email, 
-                        user_name, 
-                        password, 
-                        avatar, 
-                        role_id, 
-                        session_id, 
-                        gender_id
-                        ) values (
-                        ?, 
-                        ?, 
-                        ?, 
-                        ?, 
-                        ?, 
-                        ?, 
-                        ?, 
-                        ?, 
-                        ?, 
-                        ?
-                        )', [
-                        '0123456879', 
-                        'Admin', 
-                        'TIC', 
-                        'tic@terminalpopayan.com', 
-                        'root', 
-                        '$2y$10$JrHmRIxd8Uzjfq5xchNZu.xbs1ChvRLSwfgP5Ttm.7liQl4RJ2t7u', 
-                        'admin.png', 
-                        1, 
-                        2, 
-                        1]);
-        });
+        DB::insert('insert into users (
+                    identification, 
+                    name, 
+                    last_name, 
+                    email, 
+                    user_name, 
+                    password, 
+                    avatar, 
+                    role_id, 
+                    session_id, 
+                    gender_id
+                    ) values (
+                    ?, 
+                    ?, 
+                    ?, 
+                    ?, 
+                    ?, 
+                    ?, 
+                    ?, 
+                    ?, 
+                    ?, 
+                    ?
+                    )', [
+                    '0123456879', 
+                    'Admin', 
+                    'TIC', 
+                    'tic@terminalpopayan.com', 
+                    'root', 
+                    '$2y$10$JrHmRIxd8Uzjfq5xchNZu.xbs1ChvRLSwfgP5Ttm.7liQl4RJ2t7u', 
+                    'admin.png', 
+                    1, 
+                    2, 
+                    1]);
 
     }
 

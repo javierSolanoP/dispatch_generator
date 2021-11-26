@@ -9,8 +9,6 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-// session_start();
-
 class UserController extends Controller
 {
 
@@ -42,7 +40,7 @@ class UserController extends Controller
             $model = DB::table('users')
                         ->join('roles', 'roles.id_role', '=', 'users.role_id')
                         ->join('sessions', 'sessions.id_session', '=', 'users.session_id')
-                        ->select('users.user_name', 'users.password', 'users.name', 'users.last_name', 'users.password', 'users.avatar', 'roles.name as role', 'sessions.type_of_session as status')
+                        ->select('users.id_user', 'users.user_name', 'users.password', 'users.name', 'users.last_name', 'users.password', 'users.avatar', 'roles.name as role', 'sessions.type_of_session as status')
                         ->where('user_name', $request->input('user'));
 
             // Validamos que exista el usuario en la DB: 
@@ -68,7 +66,7 @@ class UserController extends Controller
                     if(($statusSession == $active) || ($statusSession == $inactive)){
 
                         // Asignamos un array 'data', que alamcena la informaccion que se envia a la sesion 'user': 
-                        $data = ['user_name' => $validateUser->user_name, 'name' => $validateUser->name, 'last_name' => $validateUser->last_name, 'avatar' => $validateUser->avatar];
+                        $data = ['id' => $validateUser->id_user, 'user_name' => $validateUser->user_name, 'name' => $validateUser->name, 'last_name' => $validateUser->last_name, 'avatar' => $validateUser->avatar];
 
                         // Si el estado de la sesion es 'Activa': 
                         if($statusSession == $active){
@@ -142,26 +140,25 @@ class UserController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    // Metodo para retornar la informacion de un usuario especifico: 
     public function show($id)
     {
-        //
-    }
+        // Realizamos la consulta en la DB: 
+        $model = User::where('id_user', $id);
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        // Validamos que exista el registro en la entidad: 
+        $validateUser = $model->first();
+
+        // Si existe, retornamos la informacion: 
+        if($validateUser){
+
+            // Retornamos la respuesta: 
+            return ['query' => true, 'user' => $validateUser];
+
+        }else{
+            // Retornamos el error: 
+            return ['query' => false, 'error' => 'No existe ese usuario en el sistema.'];
+        }
     }
 
     // Metodo para actualizar el estado de sesion: 
@@ -211,12 +208,6 @@ class UserController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         //

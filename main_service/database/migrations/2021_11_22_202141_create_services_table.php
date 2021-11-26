@@ -5,7 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-class CreateRolesTable extends Migration
+class CreateServicesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,13 +14,13 @@ class CreateRolesTable extends Migration
      */
     public function up()
     {
-        Schema::create('roles', function (Blueprint $table) {
-            $table->id('id_role');
-            $table->string('name', 45)->unique()->index();
+        Schema::create('services', function (Blueprint $table) {
+            $table->id('id_service');
+            $table->string('name');
             $table->timestamps();
         });
 
-        DB::insert('insert into roles (name) values (?)', ['administrador']);
+        DB::insert('insert into services (name) values (?)', ['Mensualidades']);
     }
 
     /**
@@ -30,6 +30,6 @@ class CreateRolesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('roles');
+        Schema::dropIfExists('services');
     }
 }

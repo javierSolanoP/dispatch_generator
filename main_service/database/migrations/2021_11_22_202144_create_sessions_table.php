@@ -20,11 +20,9 @@ class CreateSessionsTable extends Migration
             $table->timestamps();
         });
 
-        Schema::table('sessions', function (Blueprint $table) {
-            DB::insert('insert into sessions (type_of_session) values (?)', ['Activa']);
-            DB::insert('insert into sessions (type_of_session) values (?)', ['Inactiva']);
-            DB::insert('insert into sessions (type_of_session) values (?)', ['Pendiente']);
-        });
+        DB::insert('insert into sessions (type_of_session) values (?)', ['Activa']);
+        DB::insert('insert into sessions (type_of_session) values (?)', ['Inactiva']);
+        DB::insert('insert into sessions (type_of_session) values (?)', ['Pendiente']);
     }
 
     /**

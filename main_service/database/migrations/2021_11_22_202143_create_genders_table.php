@@ -20,10 +20,8 @@ class CreateGendersTable extends Migration
             $table->timestamps();
         });
 
-        Schema::table('genders', function (Blueprint $table) {
-            DB::insert('insert into genders (gender) values (?)', ['Masculino']);
-            DB::insert('insert into genders (gender) values (?)', ['Femenino']);
-        });
+        DB::insert('insert into genders (gender) values (?)', ['Masculino']);
+        DB::insert('insert into genders (gender) values (?)', ['Femenino']);
     }
 
     /**

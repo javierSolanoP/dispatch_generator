@@ -2,23 +2,16 @@
 
 namespace App\Http\Controllers\admin\dashboard;
 
+use App\Http\Controllers\admin\user_module\ServiceUserController;
 use App\Http\Controllers\admin\user_module\UserController;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class DashBoardController extends Controller
 {
-
-    // Metodo para inicializar una sesion: 
-    public function sessionStart(){
-        return session_start();
-    }
-
     // Metodo para validar el estado de sesion: 
     public function index()
     {
-        // $this->sessionStart();
-
         // ESTADO: 
         static $active = 'Activa';
 
@@ -28,10 +21,31 @@ class DashBoardController extends Controller
             if(isset($_SESSION['user'])){
 
                 // Asignamos el contenido de la sesion 'user' a la variable 'data': 
-                $data = $_SESSION['user'];
-    
-                // Retornamos la vista 'dashboard': 
-                return view('dashboard.dashboard', ['data' => $data]);
+                $user = $_SESSION['user'];
+
+                // Instanciamos el controlador del modelo 'ServiceUser', para extraer los servicios habilitados para el usuario: 
+                $serviceController = new ServiceUserController;
+
+                // Validamos que existan servicios habilitados: 
+                $validateService = $serviceController->show($user['id']);
+
+                // Si existen, los enviamos a la vista 'dashboard': 
+                if($validateService['query']){
+
+                    // Asignamos a la sesion 'services', los servicios extraidos: 
+                    $_SESSION['services'] =  $validateService['services'];
+
+                    // Asignamos a la variable 'services', los servicios extraidos:
+                    $services = $validateService['services'];
+
+                    // Retornamos la vista 'dashboard': 
+                    return view('dashboard.dashboard', ['user' => $user, 'services' => $services]);
+
+                }else{
+                
+                    // Retornamos la vista 'dashboard': 
+                    return view('dashboard.dashboard', ['user' => $user]);
+                }
     
             }else{
                 // Retornamos la vista 'dashboard': 
@@ -46,23 +60,7 @@ class DashBoardController extends Controller
         
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    
     public function show($id)
     {
         //
@@ -94,8 +92,8 @@ class DashBoardController extends Controller
 
         }else{
 
-            // Retornamos el error: 
-            return $logout;
+            // Redirigimos a la vista de error '500': 
+            return view('error.500');
         }
     }
 }

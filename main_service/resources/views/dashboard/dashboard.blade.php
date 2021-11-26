@@ -7,27 +7,9 @@
 
     <!-- Styles -->
     <link rel="stylesheet" href="css/dashboard.css">
-    <title>@include('components/title')</title>
+    <title>@include('components.title')</title>
 </head>
 <body>
-    <nav>
-        <div class="container-avatar">
-            <img src="images/{{$data['avatar']}}" alt="Avatar">
-            <br>
-            <p>{{ $data['name'] }} {{ $data['last_name'] }}</p>
-        </div>
-        <ul>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-        </ul>
-        <form action="{{route('logout')}}" method="GET">
-            @csrf
-            <img src="images/salida.png" alt="Icono de cerrar sesion">
-            <input type="submit" value="Cerrar sesión">
-        </form>
-    </nav>
+    @include('components.nav')
 </body>
 </html>
