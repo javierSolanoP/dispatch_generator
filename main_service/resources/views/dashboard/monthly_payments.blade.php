@@ -6,7 +6,11 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
     <!-- Styles -->
-    <link rel="stylesheet" href="../../css/dashboard.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Catamaran&display=swap" rel="stylesheet">
+        
+    <link rel="stylesheet" href="../../css/nav.css">
     <link rel="stylesheet" href="../../css/monthly_payment.css">
     <title>@include('components.title')</title>
 </head>
@@ -25,6 +29,6 @@
     
     <!-- Scripts -->
     <script  type="module" src="../../js/ObjComponent.js"></script>
-    <script  type="module" src="../../js/monthly_payments.js"></script>
+    <script  type="module" src="../../js/monthly_payment.js"></script>
 </body>
 </html>

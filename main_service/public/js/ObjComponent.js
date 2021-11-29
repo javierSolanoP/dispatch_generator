@@ -3,6 +3,7 @@ export const component = {
     // Metodo para mostrar el componente: 
     view: function (button, name)
     {
+
         let elementButton = document.querySelector('#' + button),
             elementComponent = document.querySelector('.' + name);
 
@@ -10,7 +11,7 @@ export const component = {
 
             event.preventDefault();
 
-            alert("true");
+            elementComponent.innerHTML = `<h1>Hello world!`
         });
 
     }

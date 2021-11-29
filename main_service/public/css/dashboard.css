@@ -1,103 +1,95 @@
-*{
-    margin: 0;
-    padding: 0;
-}
-
-body{
-    width: 100vw;
+section{
+    width: 80%;
     height: 100vh;
-}
-
-nav{
-    top: 0;
-    position: fixed;
-    width: 20%;
-    height: 100%;
-    background-color: #8fbd81;
+    margin-left: 20%;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
 }
 
-nav .container-avatar{
-    width: 100%;
-    height: 30%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-.container-avatar img{
+section .container{
     width: 80%;
-    height: 70%;
-    border-radius: 100%;
-    overflow: auto;
-}
-
-.container-avatar p{
-    width: 100%;
-    height: 10%;
-    text-align: center;
-    font-size: 120%;
-    color: #fff;
-}
-
-nav ul{
-    width: 90%;
-    height: 60%;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-ul li{
-    width: 100%;
-    height: 10%;
-    border-bottom: 1px solid #fff;
-    list-style: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-li a{
-    width: 100%;
-    font-size: 150%;
-    color: #fff;
-    text-decoration: none;
-    text-align: center;
-}
-
-li a:hover{
-    color: orange;
-}
-
-nav form{
-    width: 80%;
-    height: 5%;
-    border: none;
-    border-radius: 10rem;
-    background-color: orange;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-form img{
-    width: 20%;
-    height: 80%;
-}
-
-form input[type='submit']{
-    width: 65%;
     height: 90%;
-    color: #fff;
-    font-size: 120%;
-    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.container .container-button{
+    width: 100%;
+    height: 33.33%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.reverse{
+    flex-direction: row-reverse;
+}
+
+.container-button button{
+    width: 20%;
+    height: 70%;
+    overflow: auto;
     border: none;
-    background-color: transparent;
+    border-radius: 1rem;
+    box-shadow: 0.5rem 0.5rem 0.5rem rgb(78, 77, 77);
+    cursor: pointer;
+}
+
+.container-button button:hover {
+    transform: scale(110%);
+}
+
+button img{
+    width: 90%;
+    height: 90%;
+}
+
+button.add{
+    background-color: rgb(145, 233, 58);
+}
+
+button.update{
+    background-color: rgb(238, 175, 58);
+}
+
+button.delete{
+    background-color: rgb(231, 67, 67);
+}
+
+.container-button .description{
+    width: 70%;
+    height: 70%;
+    display: flex;
+    /* flex-direction: column; */
+    justify-content: space-between;
+    align-items: center;
+}
+
+.description strong{
+    width: 20%;
+    height: 20%;
+    font-size: 150%;
+    text-align: center;
+}
+
+.description ul{
+    width: 75%;
+    height: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center
+}
+
+.description ul li{
+    width: 100%;
+    height: 33%;
+    text-align: left;
+    border-bottom: none;
+    font-size: 120%;
+    font-family: 'Architects Daughter', cursive;
+    font-weight: 400;
 }

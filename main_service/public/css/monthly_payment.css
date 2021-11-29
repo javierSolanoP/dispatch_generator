@@ -41,3 +41,15 @@ button img{
     width: 90%;
     height: 90%;
 }
+
+/* Contenido */
+.content{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.content h1{
+    
+}
