@@ -23,7 +23,53 @@ form .ilustration{
     height: 90%;
 }
 
-form .container-input{
-    width: 50%;
-    height: 100%;
+form .container{
+    width: 65%;
+    height: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.container .container-input{
+    width: 100%;
+    height: 20%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.container-input input[type=text], input[type="password"] {
+    width: 45%;
+    height: 50%;
+    border: 2px solid #ced4da;
+    border-radius: 10rem;
+}
+
+::placeholder{
+    font-style: italic;
+    font-size: 120%;
+}
+
+.container-input select {
+    width: 45%;
+    height: 50%;
+    border: 2px solid #ced4da;
+    border-radius: 10rem;
+    font-style: italic;
+    font-size: 110%;
+}
+
+select option{
+    font-style: italic;
+    font-size: 120%;
+}
+
+.container input[type="submit"]{
+    width: 40%;
+    height: 10%;
+    border: none;
+    border-radius: 10rem;
+    background-color: rgb(110, 202, 18);
 }
