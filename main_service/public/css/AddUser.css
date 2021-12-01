@@ -1,0 +1,29 @@
+#container-add form{
+    width: 100%;
+    height: 50vh;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ced4da;
+    border-radius: 1rem;
+    box-shadow: 0.5rem 0.5rem 0.5rem rgb(170, 169, 169);
+}
+
+form .ilustration{
+    width: 30%;
+    height: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.ilustration img{
+    width: 90%;
+    height: 90%;
+}
+
+form .container-input{
+    width: 50%;
+    height: 100%;
+}

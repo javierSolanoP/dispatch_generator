@@ -12,14 +12,16 @@
 
     <link rel="stylesheet" href="css/nav.css">
     <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/ViewAdd.css">
+    <link rel="stylesheet" href="css/AddUser.css">
     <title>@include('components.title')</title>
 </head>
 <body>
     @include('components.nav')
-    <section>
+    <section id="component">
         <div class="container">
             <div class="container-button">
-                <button class="add">
+                <button class="add" id="addButton">
                     <img src="../../images/agregar-usuario.png" alt="Icono de agregar usuarios">
                 </button>
                 <div class="description">
@@ -59,5 +61,12 @@
             </div>
         </div>
     </section>
+    <div id="add" class="view">
+        @include('dashboard.ViewAdd')
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="../../js/components/ObjComponent.js"></script>
+    <script type="module" src="../../js/dashboard.js"></script>
 </body>
 </html>

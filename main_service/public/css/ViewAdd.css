@@ -1,0 +1,53 @@
+.view section{
+    width: 100%;
+    margin-left: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+section .addUser{
+    width: 80%;
+    height: 30vh;
+    border-bottom: 0.2rem solid rgb(145, 233, 58);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.addUser button{
+    width: 25%;
+    height: 75%;
+    cursor: pointer;
+    border: 1px solid #ced4da;
+    border-radius: 1rem;
+    box-shadow: 0.5rem 0.5rem 0.5rem rgb(170, 169, 169);
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+}
+
+.addUser button:hover{
+    transform: scale(110%);
+}
+
+.addUser button img{
+    width: 90%;
+    height: 85%;
+}
+
+.addUser button p{
+    width: 65%;
+    height: 10%;
+    font-size: 140%;
+}
+
+#container-add{
+    width: 80%;
+    height: 60vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

@@ -93,3 +93,12 @@ button.delete{
     font-family: 'Architects Daughter', cursive;
     font-weight: 400;
 }
+
+.view{
+    width: 80%;
+    height: 100vh;
+    margin-left: 20%;
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
