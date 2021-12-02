@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class CreatePermissionsTable extends Migration
@@ -18,6 +19,11 @@ class CreatePermissionsTable extends Migration
             $table->string('permission_type', 45)->unique()->index();
             $table->timestamps();
         });
+
+        DB::insert('insert into permissions (permission_type) values (?)', ['crear']);
+        DB::insert('insert into permissions (permission_type) values (?)', ['leer']);
+        DB::insert('insert into permissions (permission_type) values (?)', ['actualizar']);
+        DB::insert('insert into permissions (permission_type) values (?)', ['eliminar']);
     }
 
     /**

@@ -3,11 +3,20 @@
 namespace App\Http\Controllers\services\main;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\services\main\validate\Validate;
 use App\Models\Role;
+use Exception;
 use Illuminate\Http\Request;
+
+use function PHPUnit\Framework\at;
+use function Symfony\Component\String\s;
 
 class RoleController extends Controller
 {
+
+    protected $permissions = ['crear', 'leer', 'actualizar', 'eliminar'];
+    protected $authorization = false;
+
     // Metodo para retornar todos los roles de la DB: 
     public function index()
     {
@@ -45,23 +54,93 @@ class RoleController extends Controller
             // Validamos que el usuario tenga el permiso requerido:
             $validatePermission = $permissionRoleController->show($user);
 
-            // Si tiene permiso, validamos que no sea intento 'XSS': 
-            if($validatePermission['query']){
+            $responseValidatePermission = $validatePermission->getOriginalContent();
 
-                // Validamos que no sea un intento 'XSS': 
-                $validateXSS = stristr($name, '</script>');
+            // Si tiene permiso, validamos que tenga permisos: 
+            if($responseValidatePermission['query']){
+                
+                // Iteramos la matriz de respuesta de la validacion: 
+                foreach($responseValidatePermission['permissions'] as $permission){
 
-                // Si no lo es, validamos el dato: 
-                if(!$validateXSS){
+                    // Iteramos los arrays que contienen los permisos: 
+                    foreach($permission as $value){
 
+                        // Si posee el permiso, autorizamos:
+                        if($value == $this->permissions[0]){
+                            $this->authorization = true;
+                        }
+                    }
+                }
+
+                // Validamos que tenga la autorizacion necesaria: 
+                if($this->authorization){
+
+                    // Validamos que no sea un intento 'XSS': 
+                    $validateXSS = stristr($name, '</script>');
+
+                    // Si no lo es, validamos el dato: 
+                    if(!$validateXSS){
+
+                        // Instanciamos la clase 'Validate', para validar el tipo de dato: 
+                        $validateClass = new Validate;
+
+                        // Validamos el dato: 
+                        $validateData = $validateClass->validateText(['name' => $name]);
+
+                        // Si el dato ha sido validado, validamos que no exista ese role en la DB: 
+                        if($validateData['validate']){
+
+                            try{
+
+                                // Realizamos la consulta en la DB: 
+                                $model = Role::select('name')->where('name', $name);
+
+                                // Validamos el role: 
+                                $valdiateRole = $model->first();
+
+                                // Si no existe, realizamos el registro: 
+                                if(!$valdiateRole){
+
+                                    try{
+
+                                        // Registramos el role: 
+                                        Role::create(['name' => $name]);
+
+                                        // Retornamos la respuesta: 
+                                        return response(['register' => true], 201);
+
+                                    }catch(Exception $e){
+                                        // Retornamos el error: 
+                                        return response(['register' => false, 'error' => $e->getMessage()], 500);
+                                    }
+
+                                }else{
+                                    // Retornamos el error: 
+                                    return response(['register' => false, 'error' => 'Ya existe ese role en el sistema.'], 403); 
+                                }
+
+                            }catch(Exception $e){
+                                // Retornamos el error: 
+                                return response(['register' => false, 'error' => $e->getMessage()], 500);
+                            }
+
+                        }else{
+                            // Retornamos el error: 
+                            return response(['register' => false, 'error' => $validateData['error']], 403);
+                        }
+
+                    }else{
+                        // Retornamos el error: 
+                        return response(['register' => false, 'error' => 'Buen intento, pero no lo vas a lograr!'], 403);
+                    }
                 }else{
                     // Retornamos el error: 
-                    return response(['register' => false, 'error' => 'Buen intento, pero no lo vas a lograr!'], 403);
+                    return response(['register' => false, 'error' => 'No tiene autorizacion para realizar esta peticion'], 401);
                 }
 
             }else{
                 // Retornamos el error: 
-                return response(['register' => false, 'error' => $validatePermission['error'], 401]);
+                return response(['register' => false, 'error' => $responseValidatePermission['error']], 401);
             }
 
         }else{

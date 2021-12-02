@@ -19,3 +19,4 @@ use Illuminate\Support\Facades\Route;
 // });
 
 Route::apiResource('/users', 'App\Http\Controllers\user_module\UserController');
+Route::apiResource('/roles/v1', 'App\Http\Controllers\services\main\RoleController');

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\admin\dashboard;
 use App\Http\Controllers\admin\user_module\ServiceUserController;
 use App\Http\Controllers\admin\user_module\UserController;
 use App\Http\Controllers\Controller;
+use Exception;
 use Illuminate\Http\Request;
 
 class DashBoardController extends Controller
@@ -26,25 +27,30 @@ class DashBoardController extends Controller
                 // Instanciamos el controlador del modelo 'ServiceUser', para extraer los servicios habilitados para el usuario: 
                 $serviceController = new ServiceUserController;
 
-                // Validamos que existan servicios habilitados: 
-                $validateService = $serviceController->show($user['id']);
+                try{
+                    // Validamos que existan servicios habilitados: 
+                    $validateService = $serviceController->show($user['id']);
 
-                // Si existen, los enviamos a la vista 'dashboard': 
-                if($validateService['query']){
+                    // Si existen, los enviamos a la vista 'dashboard': 
+                    if($validateService['query']){
 
-                    // Asignamos a la sesion 'services', los servicios extraidos: 
-                    $_SESSION['services'] =  $validateService['services'];
+                        // Asignamos a la sesion 'services', los servicios extraidos: 
+                        $_SESSION['services'] =  $validateService['services'];
 
-                    // Asignamos a la variable 'services', los servicios extraidos:
-                    $services = $validateService['services'];
+                        // Asignamos a la variable 'services', los servicios extraidos:
+                        $services = $validateService['services'];
 
-                    // Retornamos la vista 'dashboard': 
-                    return view('dashboard.dashboard', ['user' => $user, 'services' => $services]);
+                        // Retornamos la vista 'dashboard': 
+                        return view('dashboard.dashboard', ['user' => $user, 'services' => $services]);
 
-                }else{
-                
-                    // Retornamos la vista 'dashboard': 
-                    return view('dashboard.dashboard', ['user' => $user]);
+                    }else{
+                    
+                        // Retornamos la vista 'dashboard': 
+                        return view('dashboard.dashboard', ['user' => $user]);
+                    }
+                }catch(Exception $e){
+                    // Redirigimos a la vista de error '500': 
+                    return view('error.500');
                 }
     
             }else{
@@ -60,7 +66,6 @@ class DashBoardController extends Controller
         
     }
 
-    
     public function show($id)
     {
         //

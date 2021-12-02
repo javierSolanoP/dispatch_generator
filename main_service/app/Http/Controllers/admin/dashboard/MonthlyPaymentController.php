@@ -37,7 +37,7 @@ class MonthlyPaymentController extends Controller
     
             }
 
-        }else{
+        }elseif($_SESSION['status']){
 
             // Redirigimos a la vista principal porque no ha iniciado sesion: 
             return redirect()->route('home');
