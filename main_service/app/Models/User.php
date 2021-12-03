@@ -24,7 +24,10 @@ class User extends Authenticatable
         'email',
         'user_name',
         'password',
-        'role_id'
+        'avatar',
+        'role_id',
+        'session_id',
+        'gender_id'
     ];
 
     /**
@@ -33,7 +36,9 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password'
+        'password',
+        'created_at',
+        'updated_at'
     ];
     
 }
