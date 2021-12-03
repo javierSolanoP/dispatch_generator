@@ -4,6 +4,7 @@ namespace App\Http\Controllers\services\main;
 
 use App\Http\Controllers\Controller;
 use App\Models\PermissionRole;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -48,8 +49,9 @@ class PermissionRoleController extends Controller
      */
     public function show($user)
     {
-        // Realizamos la consulta en la DB: 
-        $model = DB::table('users')
+        try{
+            // Realizamos la consulta en la DB: 
+            $model = DB::table('users')
 
                     ->where('user_name', $user)
 
@@ -61,15 +63,19 @@ class PermissionRoleController extends Controller
 
                     ->get();
 
-        // Validamos que existan permisos para ese role: 
-        if(count($model) != 0){
+            // Validamos que existan permisos para ese role: 
+            if(count($model) != 0){
 
-            // Retornamos la respuesta: 
-            return response(['query' => true, 'permissions' => $model]);
+                // Retornamos la respuesta: 
+                return response(['query' => true, 'permissions' => $model]);
 
-        }else{
+            }else{
+                // Retornamos el error: 
+                return response(['query' => false, 'error' => 'No existen permisos para ese role'], 404);
+            }
+        }catch(Exception $e){
             // Retornamos el error: 
-            return response(['query' => false, 'error' => 'No existen permisos para ese role'], 404);
+            return response(['query' => false, 'error' => $e->getMessage()], 500);
         }
     }
 

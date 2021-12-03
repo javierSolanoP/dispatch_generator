@@ -8,6 +8,8 @@ use App\Models\Permission;
 use Exception;
 use Illuminate\Http\Request;
 
+use function PHPUnit\Framework\at;
+
 class PermissionController extends Controller
 {
     /**
@@ -113,21 +115,26 @@ class PermissionController extends Controller
     // Metodo para validar que exista un permiso en el sistema: 
     public function show($permission_type)
     {
-        // Realizamos la consulta en la DB: 
-        $model = Permission::select('permission_type')->where('permission_type', $permission_type);
+        try{
+            // Realizamos la consulta en la DB: 
+            $model = Permission::select('permission_type')->where('permission_type', $permission_type);
 
-        // Validamos que exista el permiso: 
-        $validatePermission = $model->first();
+            // Validamos que exista el permiso: 
+            $validatePermission = $model->first();
 
-        // Si existe, retornamos la respuesta: 
-        if($validatePermission){
+            // Si existe, retornamos la respuesta: 
+            if($validatePermission){
 
-            // Retornamos la respuesta: 
-            return response(['query' => true]);
+                // Retornamos la respuesta: 
+                return response(['query' => true]);
 
-        }else{
+            }else{
+                // Retornamos el error: 
+                return response(['query' => false, 'error' => 'No existe ese permiso en el sistema'], 404);
+            }
+        }catch(Exception $e){
             // Retornamos el error: 
-            return response(['query' => false, 'error' => 'No existe ese permiso en el sistema'], 404);
+            return response(['query' => false, 'error' => $e->getMessage()], 500);
         }
     }
 
