@@ -7,39 +7,71 @@ use App\Http\Controllers\services\main\validate\Validate;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
+    // Los permisos que se le asigna a cada usaurio: 
     protected $permissions = ['crear', 'leer', 'actualizar', 'eliminar'];
+
+    // Inicializamos la propiedad que define la autorizacion de una peticion: 
     protected $authorization = false;
-    protected $status = ['activa' => 1, 'inactiva' => 2];
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    // Los estados de sesion: 
+    protected static $status = ['activa' => 1, 'inactiva' => 2, 'pendiente' => 3];
+
+    // Los avatar que se le asigna dependiendo el 'genero' de cada usuario:
+    protected static $avatar_men = 'men.png';
+    protected static $avatar_women = 'women.png'; 
+
+    // Metodo para retornar todos los usuarios registrados en la DB: 
+    public function index($id_role = null)
     {
-        //
+        try{
+            // Realizamos la consulta a la DB: 
+            $model = DB::table('users')
+
+                        ->join('roles', 'roles.id_role', '=', 'users.role_id')
+
+                        ->join('genders', 'genders.id_gender', '=', 'users.gender_id')
+                        
+                        ->select(
+                            'users.identification',
+                            'users.user_name',
+                            'users.name', 
+                            'users.last_name',
+                            'users.email',
+                            'roles.name as role',
+                            'genders.gender'
+                        );
+
+            // Si se recibe un role especifico, filtramos por el role solicitado: 
+            if($id_role != null){
+                // Con filtro:
+                $users = $model->where('role_id', '=', $id_role)->get();
+            }else{
+                // Sin filtro: 
+                $users = $model->get();
+            }           
+
+            // Validamos que existan usuarios registrados en la DB: 
+            if(count($users) != 0){
+
+                // Retornamos la respuesta: 
+                return response(['query' => true, 'users' =>  $users], 200);
+
+            }else{
+                // Retornamos el error: 
+                return response(['query' => false, 'error' => 'No existen usuarios en el sistema.'], 404);
+            }
+
+        }catch(Exception $e){
+            // Retornamos el error: 
+            return response(['query' => false, 'error' => $e->getMessage()], 500);
+        }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+    // Metodo para registrar un usuario en la DB: 
     public function store(Request $request)
     {
         // Asignamos los datos recibidos: 
@@ -135,25 +167,28 @@ class UserController extends Controller
                         }
 
                         // Realizamos la consulta en la DB: 
-                        $model = User::select('user_name');
+                        $model = DB::table('users')
 
-                        // Validamos el role: 
-                        $validateIdentification = $model->where('identification', $identification)->first();
-                        $validateUser = $model->where('user_name', $userName)->first();
+                                    ->select('user_name')
 
-                        return $validateUser;
+                                    ->where('identification', '=', $identification)
 
+                                    ->orWhere('user_name', '=', $userName)
+
+                                    ->orWhere('email', '=', $email)
+
+                                    ->first();
 
                         // Si no existe, realizamos el registro: 
-                        if(!$validateIdentification && !$validateUser){
+                        if(!$model){
 
                             if($gender == 1){
-                                $avatar = 'men.png';
+                                $avatar = self::$avatar_men;
                             }elseif($gender == 2){
-                                $avatar = 'women.png';
+                                $avatar = self::$avatar_women;
                             }
 
-                            // Registramos el role: 
+                            // Registramos el usuario: 
                             User::create([
                                             'identification' => $identification,
                                             'user_name' => $userName,
@@ -163,7 +198,7 @@ class UserController extends Controller
                                             'password' => bcrypt($password),
                                             'avatar' => $avatar,
                                             'role_id' => $role,
-                                            'session_id' => $this->status['inactiva'],
+                                            'session_id' => self::$status['inactiva'],
                                             'gender_id' => $gender
                                         ]);
 
@@ -207,16 +242,6 @@ class UserController extends Controller
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.

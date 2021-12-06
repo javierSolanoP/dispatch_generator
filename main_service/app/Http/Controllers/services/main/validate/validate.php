@@ -4,6 +4,8 @@ namespace App\Http\Controllers\services\main\validate;
 
 class Validate {
 
+    public static $const = 'Const';
+
     // Constructor: 
     public function __construct(){}
 

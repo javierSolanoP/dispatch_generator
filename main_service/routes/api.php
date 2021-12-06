@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\services\main\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -18,5 +19,6 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 
+Route::get('/users/v1/{id_role?}', [UserController::class, 'index']);
 Route::apiResource('/users/v1', 'App\Http\Controllers\services\main\UserController');
 Route::apiResource('/roles/v1', 'App\Http\Controllers\services\main\RoleController');
