@@ -25,46 +25,84 @@ class UserController extends Controller
     protected static $avatar_women = 'women.png'; 
 
     // Metodo para retornar todos los usuarios registrados en la DB: 
-    public function index($id_role = null)
+    public function index($user, $id_role = null)
     {
         try{
-            // Realizamos la consulta a la DB: 
-            $model = DB::table('users')
 
-                        ->join('roles', 'roles.id_role', '=', 'users.role_id')
+            // Instanciamos el controlador del modelo 'PermissionRole', para validar que el usuario tenga el permiso requerido: 
+            $permissionRoleController = new PermissionRoleController;
 
-                        ->join('genders', 'genders.id_gender', '=', 'users.gender_id')
-                        
-                        ->select(
-                            'users.identification',
-                            'users.user_name',
-                            'users.name', 
-                            'users.last_name',
-                            'users.email',
-                            'roles.name as role',
-                            'genders.gender'
-                        );
+            // Validamos que el usuario tenga el permiso requerido:
+            $validatePermission = $permissionRoleController->show($user);
 
-            // Si se recibe un role especifico, filtramos por el role solicitado: 
-            if($id_role != null){
-                // Con filtro:
-                $users = $model->where('role_id', '=', $id_role)->get();
-            }else{
-                // Sin filtro: 
-                $users = $model->get();
-            }           
+            $responseValidatePermission = $validatePermission->getOriginalContent();
 
-            // Validamos que existan usuarios registrados en la DB: 
-            if(count($users) != 0){
+            // Si tiene permiso, validamos que tenga permisos: 
+            if($responseValidatePermission['query']){
 
-                // Retornamos la respuesta: 
-                return response(['query' => true, 'users' =>  $users], 200);
+                // Iteramos la matriz de respuesta de la validacion: 
+                foreach($responseValidatePermission['permissions'] as $permission){
+
+                    // Iteramos los arrays que contienen los permisos: 
+                    foreach($permission as $value){
+
+                        // Si posee el permiso, autorizamos:
+                        if($value == $this->permissions[1]){
+                            $this->authorization = true;
+                        }
+                    }
+                }
+
+                if($this->authorization){
+
+                    // Realizamos la consulta a la DB: 
+                    $model = DB::table('users')
+
+                                ->join('roles', 'roles.id_role', '=', 'users.role_id')
+
+                                ->join('genders', 'genders.id_gender', '=', 'users.gender_id')
+                                
+                                ->select(
+                                    'users.identification',
+                                    'users.user_name',
+                                    'users.name', 
+                                    'users.last_name',
+                                    'users.email',
+                                    'roles.name as role',
+                                    'genders.gender'
+                                );
+
+                    // Si se recibe un role especifico, filtramos por el role solicitado: 
+                    if($id_role != null){
+                        // Con filtro:
+                        $users = $model->where('role_id', '=', $id_role)->get();
+                    }else{
+                        // Sin filtro: 
+                        $users = $model->get();
+                    }           
+
+                    // Validamos que existan usuarios registrados en la DB: 
+                    if(count($users) != 0){
+
+                        // Retornamos la respuesta: 
+                        return response(['query' => true, 'users' =>  $users], 200);
+
+                    }else{
+                        // Retornamos el error: 
+                        return response(['query' => false, 'error' => 'No existen usuarios en el sistema.'], 404);
+                    }
+
+
+                }else{
+                    // Retornamos el error: 
+                    return response(['query' => false, 'error' => 'Usted no tiene autorizacion para realizar esta peticion'], 401);
+                }
 
             }else{
                 // Retornamos el error: 
-                return response(['query' => false, 'error' => 'No existen usuarios en el sistema.'], 404);
+                return response(['query' => false, 'error' => 'Usted no tiene permisos para realizar esta peticion'], 401);
             }
-
+    
         }catch(Exception $e){
             // Retornamos el error: 
             return response(['query' => false, 'error' => $e->getMessage()], 500);
@@ -217,7 +255,7 @@ class UserController extends Controller
 
                 }else{
                     // Retornamos el error: 
-                    return response(['register' => false, 'error' => $responseValidatePermission['error']], 401);
+                    return response(['register' => false, 'error' => 'Usted no tiene permisos para realizar esta peticion'], 401);
                 }
 
             }catch(Exception $e){
@@ -231,38 +269,194 @@ class UserController extends Controller
         }
     }
 
-    /**
-     * idsplay the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    // Metodo para retornar la informacion de un usuario registrado en la DB: 
+    public function show($user, $identification = null)
     {
-        //
+        try{
+
+            // Instanciamos el controlador del modelo 'PermissionRole', para validar que el usuario tenga el permiso requerido: 
+            $permissionRoleController = new PermissionRoleController;
+
+            // Validamos que el usuario tenga el permiso requerido:
+            $validatePermission = $permissionRoleController->show($user);
+
+            $responseValidatePermission = $validatePermission->getOriginalContent();
+
+            // Si tiene permiso, validamos que tenga permisos: 
+            if($responseValidatePermission['query']){
+
+                // Iteramos la matriz de respuesta de la validacion: 
+                foreach($responseValidatePermission['permissions'] as $permission){
+
+                    // Iteramos los arrays que contienen los permisos: 
+                    foreach($permission as $value){
+
+                        // Si posee el permiso, autorizamos:
+                        if($value == $this->permissions[1]){
+                            $this->authorization = true;
+                        }
+                    }
+                }
+
+                if($this->authorization){
+
+                    // Realizamos la consulta a la DB: 
+                    $model = DB::table('users')
+
+                                ->join('roles', 'roles.id_role', '=', 'users.role_id')
+
+                                ->join('genders', 'genders.id_gender', '=', 'users.gender_id')
+                                
+                                ->select(
+                                    'users.identification',
+                                    'users.user_name',
+                                    'users.name', 
+                                    'users.last_name',
+                                    'users.email',
+                                    'roles.name as role',
+                                    'genders.gender'
+                                )
+                                
+                                ->where('identification', '=', $identification)->first();
+
+                    // Validamos que exista el registro en la DB: 
+                    if($model){
+
+                        // Retornamos la respuesta: 
+                        return response(['query' => true, 'user' => $model], 200);
+
+                    }else{
+                        // Retornamos el error: 
+                        return response(['query' => false, 'error' => 'No existe ese usuario en el sistema'], 404);
+                    }
+
+                }else{
+                    // Retornamos el error: 
+                    return response(['query' => false, 'error' => 'Usted no tiene autorizacion para realizar esta peticion'], 401);
+                }
+
+            }else{
+                // Retornamos el error: 
+                return response(['query' => false, 'error' => 'Usted no tiene permisos para realizar esta peticion'], 401);
+            }
+
+        }catch(Exception $e){
+            // Retornamos el error: 
+            return response(['query' => false, 'error' => $e->getMessage()], 500);
+        }
     }
 
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
+    public function update(Request $request, $user)
     {
-        //
+        try{
+
+            // Instanciamos el controlador del modelo 'PermissionRole', para validar que el usuario tenga el permiso requerido: 
+            $permissionRoleController = new PermissionRoleController;
+
+            // Validamos que el usuario tenga el permiso requerido:
+            $validatePermission = $permissionRoleController->show($user);
+
+            $responseValidatePermission = $validatePermission->getOriginalContent();
+
+            // Si tiene permiso, validamos que tenga permisos: 
+            if($responseValidatePermission['query']){
+
+                // Iteramos la matriz de respuesta de la validacion: 
+                foreach($responseValidatePermission['permissions'] as $permission){
+
+                    // Iteramos los arrays que contienen los permisos: 
+                    foreach($permission as $value){
+
+                        // Si posee el permiso, autorizamos:
+                        if($value == $this->permissions[2]){
+                            $this->authorization = true;
+                        }
+                    }
+                }
+
+                if($this->authorization){
+
+                    
+
+                }else{
+                    // Retornamos el error: 
+                    return response(['query' => false, 'error' => 'Usted no tiene autorizacion para realizar esta peticion'], 401);
+                }
+
+            }else{
+                // Retornamos el error: 
+                return response(['query' => false, 'error' => 'Usted no tiene permisos para realizar esta peticion'], 401);
+            }
+
+        }catch(Exception $e){
+            // Retornamos el error: 
+            return response(['query' => false, 'error' => $e->getMessage()], 500);
+        }
     }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
+    
+    public function destroy($user, $identification = null)
     {
-        //
+        try{
+
+            // Instanciamos el controlador del modelo 'PermissionRole', para validar que el usuario tenga el permiso requerido: 
+            $permissionRoleController = new PermissionRoleController;
+
+            // Validamos que el usuario tenga el permiso requerido:
+            $validatePermission = $permissionRoleController->show($user);
+
+            $responseValidatePermission = $validatePermission->getOriginalContent();
+
+            // Si tiene permiso, validamos que tenga permisos: 
+            if($responseValidatePermission['query']){
+
+                // Validamos que se encuentre registrado el usuario: 
+                foreach($responseValidatePermission['permissions'] as $permission){
+
+                    // Iteramos los arrays que contienen los permisos: 
+                    foreach($permission as $value){
+
+                        // Si posee el permiso, autorizamos:
+                        if($value == $this->permissions[3]){
+                            $this->authorization = true;
+                        }
+                    }
+                }
+
+                if($this->authorization){
+
+                    // Realizamos la consulta en la DB: 
+                    $model = User::select('identification')->where('identification', $identification);
+
+                    // Validamos que se encuentre registrado el usuario: 
+                    $validateUser = $model->first(); 
+
+                    // Si existe, eliminamos el registro: 
+                    if($validateUser){
+
+                        // Eliminamos el registro: 
+                        $model->delete();
+
+                        // Retornamos la respuesta: 
+                        return response(['delete' => true], 200);
+
+                    }else{
+                        // Retornamos el error: 
+                        return response(['delete' => false, 'error' => 'No existe ese usuario en el sistema'], 404);
+                    }
+
+                }else{
+                    // Retornamos el error: 
+                    return response(['delete' => false, 'error' => 'Usted no tiene autorizacion para realizar esta peticion'], 401);
+                }
+
+            }else{
+                // Retornamos el error: 
+                return response(['delete' => false, 'error' => 'Usted no tiene permisos para realizar esta peticion'], 401);
+            }
+
+        }catch(Exception $e){
+            // Retornamos el error: 
+            return response(['delete' => false, 'error' => $e->getMessage()], 500);
+        }
     }
 }
