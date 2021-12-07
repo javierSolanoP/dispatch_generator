@@ -8,6 +8,7 @@ use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Symfony\Component\Console\Input\Input;
 
 class UserController extends Controller
 {
@@ -115,9 +116,9 @@ class UserController extends Controller
         // Asignamos los datos recibidos: 
         $identification = $request->input('identification');
         $user = $request->input('user');
-        $userName = $request->input('userName');
+        $userName = $request->input('user_name');
         $name = $request->input('name');
-        $lastName = $request->input('lastName');
+        $lastName = $request->input('last_name');
         $email = $request->input('email');
         $password = $request->input('password');
         $confirmPassword = $request->input('confirmPassword');
@@ -346,6 +347,7 @@ class UserController extends Controller
         }
     }
 
+    // Metodo para actualizar el registro de un usuario en la DB: 
     public function update(Request $request, $user)
     {
         try{
@@ -376,21 +378,69 @@ class UserController extends Controller
 
                 if($this->authorization){
 
-                    
+                    // Realizamos la consulta en la DB: 
+                    $model = User::select('identification')->where('identification', $request->input('identification'));
+
+                    // Validamos que exista el registro: 
+                    $validateUser = $model->first();
+
+                    // Si existe, actualizamos el registro: 
+                    if($validateUser){
+
+                        // Declaramos el array 'data', para almacenar los datos ingresados: 
+                        $data = [];
+
+                        // Iteramos el array que contiene los datos recibidos: 
+                        foreach($request->all() as $input => $value){
+    
+                            // Validamos que no existan datos vacios: 
+                            if(!empty($value)){
+
+                                // Validamos si la clave pertene al usuario que realiza la peticion: 
+                                if($input == 'user'){
+
+                                    // Continuamos a la siguiente iteracion: 
+                                    continue;
+                                
+                                // Validamos si el dato contiene caracteres de tipo mayusculas: 
+                                }elseif(preg_match("/[A-Z]/", $input)){
+
+                                    $data[$input] = true;
+                                }else{
+
+                                    // Almacenamos los datos que no esten vacios: 
+                                    $data[$input] = $value;
+                                }
+
+                            }
+                        }
+
+                        return $data;
+
+                        // Actualizamos el registro con los datos recibidos: 
+                        $model->update($data);
+
+                        // Retornamos la respuesta: 
+                        return response()->noContent();
+
+                    }else{
+                        // Retornamos el error: 
+                        return response(['update' => false, 'error' => 'No existe ese usuario en el sistema'], 404);
+                    }
 
                 }else{
                     // Retornamos el error: 
-                    return response(['query' => false, 'error' => 'Usted no tiene autorizacion para realizar esta peticion'], 401);
+                    return response(['update' => false, 'error' => 'Usted no tiene autorizacion para realizar esta peticion'], 401);
                 }
 
             }else{
                 // Retornamos el error: 
-                return response(['query' => false, 'error' => 'Usted no tiene permisos para realizar esta peticion'], 401);
+                return response(['update' => false, 'error' => 'Usted no tiene permisos para realizar esta peticion'], 401);
             }
 
         }catch(Exception $e){
             // Retornamos el error: 
-            return response(['query' => false, 'error' => $e->getMessage()], 500);
+            return response(['update' => false, 'error' => $e->getMessage()], 500);
         }
     }
     
@@ -437,7 +487,7 @@ class UserController extends Controller
                         $model->delete();
 
                         // Retornamos la respuesta: 
-                        return response(['delete' => true], 200);
+                        return response()->noContent();
 
                     }else{
                         // Retornamos el error: 

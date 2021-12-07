@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Route;
 // });
 
 // Ruta para retornar todos los usuarios: 
-Route::get('/role-users/v1/{user}/{id_role?}', [UserController::class, 'index']);
+Route::get('/role/users/v1/{user}/{id_role?}', [UserController::class, 'index']);
 
 // Metodo para retornar un usuario especifico: 
 Route::get('/users/v1/{user}/{identification?}', [UserController::class, 'show']);
@@ -30,7 +30,6 @@ Route::put('/users/v1/{user}/{identification?}', [UserController::class, 'update
 
 // Metodo para eliminar un usuario: 
 Route::delete('/users/v1/{user}/{identification?}', [UserController::class, 'destroy']);
-
 
 // Route::apiResource('/users/v1', 'App\Http\Controllers\services\main\UserController');
 // Route::apiResource('/roles/v1', 'App\Http\Controllers\services\main\RoleController');
