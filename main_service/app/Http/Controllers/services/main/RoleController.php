@@ -40,7 +40,7 @@ class RoleController extends Controller
                     foreach($permission as $value){
 
                         // Si posee el permiso, autorizamos:
-                        if($value == $this->permissions[0]){
+                        if($value == $this->permissions[1]){
                             $this->authorization = true;
                         }
                     }
@@ -112,7 +112,7 @@ class RoleController extends Controller
                         foreach($permission as $value){
 
                             // Si posee el permiso, autorizamos:
-                            if($value == $this->permissions[1]){
+                            if($value == $this->permissions[0]){
                                 $this->authorization = true;
                             }
                         }
@@ -210,7 +210,7 @@ class RoleController extends Controller
                     foreach($permission as $value){
 
                         // Si posee el permiso, autorizamos:
-                        if($value == $this->permissions[0]){
+                        if($value == $this->permissions[1]){
                             $this->authorization = true;
                         }
                     }
