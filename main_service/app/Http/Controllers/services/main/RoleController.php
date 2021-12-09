@@ -233,7 +233,7 @@ class RoleController extends Controller
 
                     }else{
                         // Retornamos el error: 
-                        return response(['query' => false, 'error' => 'No existen roles en el sistema.'], 404);
+                        return response(['query' => false, 'error' => 'No existe ese role en el sistema.'], 404);
                     }
 
                 }else{

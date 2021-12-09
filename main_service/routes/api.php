@@ -46,4 +46,7 @@ Route::delete('/roles/v1/{user}/{id}', [RoleController::class, 'delete']);
 Route::get('/genders/v1/{user}', [GenderController::class, 'index']);
 
 // Ruta para validar si existe un genero:
-Route::get('/validate/genders/v1/{user}', [GenderController::class, 'show']);
+Route::get('/validate/genders/v1/{user}/{id}', [GenderController::class, 'show']);
+
+// Ruta para eliminar un genero: 
+Route::delete('/genders/v1/{user}/{id}', [GenderController::class, 'delete']);
