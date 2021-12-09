@@ -8,7 +8,6 @@ use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Symfony\Component\Console\Input\Input;
 
 class UserController extends Controller
 {
@@ -396,8 +395,17 @@ class UserController extends Controller
                             // Validamos que no existan datos vacios: 
                             if(!empty($value)){
 
-                                // Validamos si la clave pertene al usuario que realiza la peticion: 
-                                if($input == 'user'){
+                                // Validamos el dato: 
+                                $validateXSS = stristr($value, '</script>');
+
+                                // Si se encuentra el script, retornamos el error: 
+                                if($validateXSS){
+                                    
+                                    // Retornamos el error: 
+                                    return response(['update' => false, 'error' => 'Buen intento, pero no lo vas a lograr!'], 403);
+                                
+                                // Validamos si la clave pertene al usuario que realiza la peticion:     
+                                }elseif($input == 'user'){
 
                                     // Continuamos a la siguiente iteracion: 
                                     continue;
@@ -410,10 +418,18 @@ class UserController extends Controller
 
                                 }else{
 
-                                    // Almacenamos los datos que no esten vacios: 
-                                    $data[$input] = $value;
-                                }
+                                    // Validamos si la clave corresponde a una 'password': 
+                                    if($input == 'password'){
+                                        
+                                        // Encriptamos el contenido de la 'password': 
+                                        $data[$input] = bcrypt($value);
+                                    
+                                    }else{
 
+                                        // Almacenamos los datos que no esten vacios: 
+                                        $data[$input] = $value;
+                                    }
+                                }
                             }
                         }
 
