@@ -39,7 +39,7 @@ Route::get('/roles/v1/{user}', [RoleController::class, 'index']);
 Route::get('/validate/roles/v1/{user}/{id}', [RoleController::class, 'show']);
 
 // Ruta para eliminar un role: 
-Route::delete('/roles/v1/{user}/{id}', [RoleController::class, 'delete']);
+Route::delete('/roles/v1/{user}/{id}', [RoleController::class, 'destroy']);
 
 
 // CONTROLADOR DE GENEROS:
@@ -50,8 +50,15 @@ Route::get('/genders/v1/{user}', [GenderController::class, 'index']);
 Route::get('/validate/genders/v1/{user}/{id}', [GenderController::class, 'show']);
 
 // Ruta para eliminar un genero: 
-Route::delete('/genders/v1/{user}/{id}', [GenderController::class, 'delete']);
+Route::delete('/genders/v1/{user}/{id}', [GenderController::class, 'destroy']);
 
 
 // CONTROLADOR DE PERMISOS: 
+// Ruta para retornar todos los permisos: 
 Route::get('/permissions/v1/{user}', [PermissionController::class, 'index']);
+
+// Ruta para validar si existe un permiso: 
+Route::get('/validate/permissions/v1/{user}/{id}', [PermissionController::class, 'show']);
+
+// Ruta para eliminar un permiso: 
+Route::delete('/permissions/v1/{user}/{id}', [PermissionController::class, 'destroy']);
