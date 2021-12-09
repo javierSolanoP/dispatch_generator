@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
-    // Los permisos que se le asigna a cada usaurio: 
+    // Los permisos que se le asigna a cada usuario: 
     protected $permissions = ['crear', 'leer', 'actualizar', 'eliminar'];
 
     // Inicializamos la propiedad que define la autorizacion de una peticion: 
@@ -400,12 +400,12 @@ class UserController extends Controller
 
                                 // Si se encuentra el script, retornamos el error: 
                                 if($validateXSS){
-                                    
+
                                     // Retornamos el error: 
                                     return response(['update' => false, 'error' => 'Buen intento, pero no lo vas a lograr!'], 403);
                                 
-                                // Validamos si la clave pertene al usuario que realiza la peticion:     
-                                }elseif($input == 'user'){
+                                // Validamos si la clave pertene al usuario que realiza la peticion o si se trata de la 'identificacion' del registro a actualizar:     
+                                }elseif(($input == 'user') || ($input == 'identification')){
 
                                     // Continuamos a la siguiente iteracion: 
                                     continue;

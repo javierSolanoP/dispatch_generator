@@ -8,34 +8,79 @@ use App\Models\Role;
 use Exception;
 use Illuminate\Http\Request;
 
-use function PHPUnit\Framework\at;
-use function Symfony\Component\String\s;
-
 class RoleController extends Controller
 {
 
-    protected $permissions = ['crear', 'leer', 'actualizar', 'eliminar'];
+    // Los permisos que se le asigna a cada usuario: 
+    protected $permissions = ['crear', 'leer', 'eliminar'];
+
+    // Inicializamos la propiedad que define la autorizacion de una peticion: 
     protected $authorization = false;
 
     // Metodo para retornar todos los roles de la DB: 
-    public function index()
+    public function index($user)
     {
-        // Realizamos la consulta en la DB: 
-        $model = Role::select('name');
+        try{
 
-        // Validamos que existan roles en la DB: 
-        $validateRole = $model->get();
+            // Instanciamos el controlador del modelo 'PermissionRole', para validar que el usuario tenga el permiso requerido: 
+            $permissionRoleController = new PermissionRoleController;
 
-        // Si existen, los retornamos: 
-        if(count($validateRole) != 0){
+            // Validamos que el usuario tenga el permiso requerido:
+            $validatePermission = $permissionRoleController->show($user);
 
-            // Retornamos la respuesta: 
-            return response(['query' => true, 'roles' => $validateRole]);
+            $responseValidatePermission = $validatePermission->getOriginalContent();
 
-        }else{
+            // Si tiene permisos, validamos que tenga el permiso requerido: 
+            if($responseValidatePermission['query']){
+
+                // Iteramos la matriz de respuesta de la validacion: 
+                foreach($responseValidatePermission['permissions'] as $permission){
+
+                    // Iteramos los arrays que contienen los permisos: 
+                    foreach($permission as $value){
+
+                        // Si posee el permiso, autorizamos:
+                        if($value == $this->permissions[0]){
+                            $this->authorization = true;
+                        }
+                    }
+                }
+
+                // Validamos que tenga la autorizacion necesaria: 
+                if($this->authorization){
+
+                    // Realizamos la consulta en la DB: 
+                    $model = Role::select('id_role as id', 'name as role');
+
+                    // Validamos que existan roles en la DB: 
+                    $validateRole = $model->get();
+
+                    // Si existen, los retornamos: 
+                    if(count($validateRole) != 0){
+
+                        // Retornamos la respuesta: 
+                        return response(['query' => true, 'roles' => $validateRole]);
+
+                    }else{
+                        // Retornamos el error: 
+                        return response(['query' => false, 'error' => 'No existen roles en el sistema.'], 404);
+                    }
+
+                }else{
+                    // Retornamos el error: 
+                    return response(['query' => false, 'error' => 'Usted no tiene autorizacion para realizar esta peticion'], 401);
+                }
+
+            }else{
+                // Retornamos el error: 
+                return response(['query' => false, 'error' => 'Usted no tiene permisos para realizar esta peticion'], 401);
+            }
+            
+        }catch(Exception $e){
             // Retornamos el error: 
-            return response(['query' => false, 'error' => 'No existen roles en el sistema.'], 404);
+            return response(['query' =>  false, 'error' => $e->getMessage()], 500);
         }
+
     }
 
     // Metodo para registrar un role en la DB: 
@@ -67,7 +112,7 @@ class RoleController extends Controller
                         foreach($permission as $value){
 
                             // Si posee el permiso, autorizamos:
-                            if($value == $this->permissions[0]){
+                            if($value == $this->permissions[1]){
                                 $this->authorization = true;
                             }
                         }
@@ -142,48 +187,138 @@ class RoleController extends Controller
 
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    // Metodo para validar si existe un role: 
+    public function show($user, $id)
     {
-        //
+        try{
+
+            // Instanciamos el controlador del modelo 'PermissionRole', para validar que el usuario tenga el permiso requerido: 
+            $permissionRoleController = new PermissionRoleController;
+
+            // Validamos que el usuario tenga el permiso requerido:
+            $validatePermission = $permissionRoleController->show($user);
+
+            $responseValidatePermission = $validatePermission->getOriginalContent();
+
+            // Si tiene permisos, validamos que tenga el permiso requerido: 
+            if($responseValidatePermission['query']){
+
+                // Iteramos la matriz de respuesta de la validacion: 
+                foreach($responseValidatePermission['permissions'] as $permission){
+
+                    // Iteramos los arrays que contienen los permisos: 
+                    foreach($permission as $value){
+
+                        // Si posee el permiso, autorizamos:
+                        if($value == $this->permissions[0]){
+                            $this->authorization = true;
+                        }
+                    }
+                }
+
+                // Validamos que tenga la autorizacion necesaria: 
+                if($this->authorization){
+
+                    // Realizamos la consulta en la DB: 
+                    $model = Role::select('id_role')->where('id_role', $id);
+
+                    // Validamos que existan roles en la DB: 
+                    $validateRole = $model->first();
+
+                    // Si existen, los retornamos: 
+                    if($validateRole){
+
+                        // Retornamos la respuesta: 
+                        return response(['query' => true, 'role' => $validateRole]);
+
+                    }else{
+                        // Retornamos el error: 
+                        return response(['query' => false, 'error' => 'No existen roles en el sistema.'], 404);
+                    }
+
+                }else{
+                    // Retornamos el error: 
+                    return response(['query' => false, 'error' => 'Usted no tiene autorizacion para realizar esta peticion'], 401);
+                }
+
+            }else{
+                // Retornamos el error: 
+                return response(['query' => false, 'error' => 'Usted no tiene permisos para realizar esta peticion'], 401);
+            }
+            
+        }catch(Exception $e){
+            // Retornamos el error: 
+            return response(['query' =>  false, 'error' => $e->getMessage()], 500);
+        }
+
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
+    // Metodo para eliminar el registro de un role: 
+    public function destroy($user, $id)
     {
-        //
+        try{
+
+            // Instanciamos el controlador del modelo 'PermissionRole', para validar que el usuario tenga el permiso requerido: 
+            $permissionRoleController = new PermissionRoleController;
+
+            // Validamos que el usuario tenga el permiso requerido:
+            $validatePermission = $permissionRoleController->show($user);
+
+            $responseValidatePermission = $validatePermission->getOriginalContent();
+
+            // Si tiene permisos, validamos que tenga el permiso requerido: 
+            if($responseValidatePermission['query']){
+
+                // Iteramos la matriz de respuesta de la validacion: 
+                foreach($responseValidatePermission['permissions'] as $permission){
+
+                    // Iteramos los arrays que contienen los permisos: 
+                    foreach($permission as $value){
+
+                        // Si posee el permiso, autorizamos:
+                        if($value == $this->permissions[2]){
+                            $this->authorization = true;
+                        }
+                    }
+                }
+
+                // Validamos que tenga la autorizacion necesaria: 
+                if($this->authorization){
+
+                    // Realizamos la consulta en la DB: 
+                    $model = Role::select('id_role')->where('id_role', $id);
+
+                    // Validamos que existan roles en la DB: 
+                    $validateRole = $model->first();
+
+                    // Si existen, eliminamos el registro: 
+                    if($validateRole){
+
+                        $model->delete();
+
+                        // Retornamos la respuesta: 
+                        return response()->noContent();
+
+                    }else{
+                        // Retornamos el error: 
+                        return response(['delete' => false, 'error' => 'No existe ese role en el sistema.'], 404);
+                    }
+
+                }else{
+                    // Retornamos el error: 
+                    return response(['delete' => false, 'error' => 'Usted no tiene autorizacion para realizar esta peticion'], 401);
+                }
+
+            }else{
+                // Retornamos el error: 
+                return response(['delete' => false, 'error' => 'Usted no tiene permisos para realizar esta peticion'], 401);
+            }
+            
+        }catch(Exception $e){
+            // Retornamos el error: 
+            return response(['delete' =>  false, 'error' => $e->getMessage()], 500);
+        }
+
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }
