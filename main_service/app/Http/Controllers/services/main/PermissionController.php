@@ -8,101 +8,174 @@ use App\Models\Permission;
 use Exception;
 use Illuminate\Http\Request;
 
-use function PHPUnit\Framework\at;
-
 class PermissionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    // Los permisos que se le asigna a cada usuario: 
+    protected $permissions = ['crear', 'leer', 'eliminar'];
+
+    // Inicializamos la propiedad que define la autorizacion de una peticion: 
+    protected $authorization = false;
+
+    // Metodo para retornar todos los generos de la DB : 
+    public function index($user)
     {
-        //
-    }
-
-    // Metodo para registrar un permiso en la DB: 
-    public function store(Request $request)
-    {
-        // Asignamos los datos recibidos: 
-        $user = $request->input('user');
-        $permission_type = $request->input('permission_type');
-
-        // Validamos que no existan datos vacios: 
-        if(!empty($user) && !empty($permission_type)){
-
+        try{
+            
             // Instanciamos el controlador del modelo 'PermissionRole', para validar que el usuario tenga el permiso requerido: 
             $permissionRoleController = new PermissionRoleController;
 
             // Validamos que el usuario tenga el permiso requerido:
             $validatePermission = $permissionRoleController->show($user);
 
-            // Si tiene permiso, validamos que no sea intento 'XSS': 
-            if($validatePermission['query']){
+            $responseValidatePermission = $validatePermission->getOriginalContent();
 
-                // Validamos que no sea un intento 'XSS': 
-                $validateXSS = stristr($permission_type, '</script>');
+            // Si tiene permisos, validamos que tenga el permiso requerido: 
+            if($responseValidatePermission['query']){
 
-                // Si no lo es, validamos el dato: 
-                if(!$validateXSS){
+                // Iteramos la matriz de respuesta de la validacion: 
+                foreach($responseValidatePermission['permissions'] as $permission){
 
-                    // Instanciamos la clase 'Validate', para validar el tipo de dato: 
-                    $validateClass = new Validate;
+                    // Iteramos los arrays que contienen los permisos: 
+                    foreach($permission as $value){
 
-                    // Validamos el dato: 
-                    $validateData = $validateClass->validateText(['permission_type' => $permission_type]);
-
-                    // Si el dato ha sido validado, validamos que no exista ese role en la DB: 
-                    if($validateData['validate']){
-
-                        try{
-
-                            // Realizamos la consulta en la DB: 
-                            $model = Permission::select('permission_type')->where('permission_type', $permission_type);
-
-                            // Validamos el role: 
-                            $valdiateRole = $model->first();
-
-                            // Si no existe, realizamos el registro: 
-                            if(!$valdiateRole){
-
-                                try{
-
-                                    // Registramos el role: 
-                                    Permission::create(['permission_type' => $permission_type]);
-
-                                    // Retornamos la respuesta: 
-                                    return response(['register' => true]);
-
-                                }catch(Exception $e){
-                                    // Retornamos el error: 
-                                    return response(['register' => false, 'error' => $e->getMessage()], 500);
-                                }
-
-                            }else{
-                                // Retornamos el error: 
-                                return response(['register' => false, 'error' => 'Ya existe ese permiso en el sistema.'], 403); 
-                            }
-
-                        }catch(Exception $e){
-                            // Retornamos el error: 
-                            return response(['register' => false, 'error' => $e->getMessage()], 500);
+                        // Si posee el permiso, autorizamos:
+                        if($value == $this->permissions[1]){
+                            $this->authorization = true;
                         }
+                    }
+                }
+
+                // Validamos que tenga la autorizacion necesaria: 
+                if($this->authorization){
+
+                    // Realizamos la consulta en la DB: 
+                    $model = Permission::select('id_permission as id', 'permission_type as name');
+
+                    // Validamos que existan permisos en la DB: 
+                    $validatePermission = $model->get();
+
+                    // Si existen, los retornamos: 
+                    if(count($validatePermission) != 0){
+
+                        // Retornamos la respuesta: 
+                        return response(['query' => true, 'permissions' => $validatePermission]);
 
                     }else{
                         // Retornamos el error: 
-                        return response(['register' => false, 'error' => $validateData['error']], 403);
+                        return response(['query' => false, 'error' => 'No existe ese permiso en el sistema.'], 404);
                     }
 
                 }else{
                     // Retornamos el error: 
-                    return response(['register' => false, 'error' => 'Buen intento, pero no lo vas a lograr!'], 403);
+                    return response(['query' => false, 'error' => 'Usted no tiene autorizacion para realizar esta peticion'], 401);
                 }
 
             }else{
                 // Retornamos el error: 
-                return response(['register' => false, 'error' => $validatePermission['error'], 401]);
+                return response(['query' => false, 'error' => 'Usted no tiene permisos para realizar esta peticion'], 401);
+            }
+
+        }catch(Exception $e){
+            // Retornamos el error: 
+            return response(['query' => false, 'error' => $e->getMessage()], 500);
+        }
+    }
+
+    // Metodo para registrar un genero: 
+    public function store(Request $request)
+    {
+        // Asignamos los datos recibidos: 
+        $user = $request->input('user');
+        $name = $request->input('name');
+
+        // Validamos que no existan datos vacios: 
+        if(!empty($user) && !empty($name)){
+
+            try{
+                // Instanciamos el controlador del modelo 'PermissionRole', para validar que el usuario tenga el permiso requerido: 
+                $permissionRoleController = new PermissionRoleController;
+
+                // Validamos que el usuario tenga el permiso requerido:
+                $validatePermission = $permissionRoleController->show($user);
+
+                $responseValidatePermission = $validatePermission->getOriginalContent();
+
+                // Si tiene permiso, validamos que tenga permisos: 
+                if($responseValidatePermission['query']){
+                    
+                    // Iteramos la matriz de respuesta de la validacion: 
+                    foreach($responseValidatePermission['permissions'] as $permission){
+
+                        // Iteramos los arrays que contienen los permisos: 
+                        foreach($permission as $value){
+
+                            // Si posee el permiso, autorizamos:
+                            if($value == $this->permissions[0]){
+                                $this->authorization = true;
+                            }
+                        }
+                    }
+
+                    // Validamos que tenga la autorizacion necesaria: 
+                    if($this->authorization){
+
+                        // Validamos que no sea un intento 'XSS': 
+                        $validateXSS = stristr($name, '</script>');
+
+                        // Si no lo es, validamos el dato: 
+                        if(!$validateXSS){
+
+                            // Instanciamos la clase 'Validate', para validar el tipo de dato: 
+                            $validateClass = new Validate;
+
+                            // Validamos el dato: 
+                            $validateData = $validateClass->validateText(['name' => $name]);
+
+                            // Si el dato ha sido validado, validamos que no exista ese role en la DB: 
+                            if($validateData['validate']){
+
+                                // Realizamos la consulta en la DB: 
+                                $model = Permission::select('permission_type')->where('permission_type', $name);
+
+                                // Validamos el role: 
+                                $validatePermission = $model->first();
+
+                                // Si no existe, realizamos el registro: 
+                                if(!$validatePermission){
+
+                                    // Registramos el permiso: 
+                                    Permission::create(['permission_type' => $name]);
+
+                                    // Retornamos la respuesta: 
+                                    return response(['register' => true], 201);
+
+                                }else{
+                                    // Retornamos el error: 
+                                    return response(['register' => false, 'error' => 'Ya existe ese genero en el sistema.'], 403); 
+                                }
+
+                            }else{
+                                // Retornamos el error: 
+                                return response(['register' => false, 'error' => $validateData['error']], 403);
+                            }
+
+                        }else{
+                            // Retornamos el error: 
+                            return response(['register' => false, 'error' => 'Buen intento, pero no lo vas a lograr!'], 403);
+                        }
+                    }else{
+                        // Retornamos el error: 
+                        return response(['register' => false, 'error' => 'Usted no tiene autorizacion para realizar esta peticion'], 401);
+                    }
+
+                }else{
+                    // Retornamos el error: 
+                    return response(['register' => false, 'error' => 'Usted no tiene permisos para realizar esta peticion'], 401);
+                }
+
+            }catch(Exception $e){
+                // Retornamos el error: 
+                return response(['register' => false, 'error' => $e->getMessage()], 500);
             }
 
         }else{
@@ -112,63 +185,136 @@ class PermissionController extends Controller
  
     }
 
-    // Metodo para validar que exista un permiso en el sistema: 
-    public function show($permission_type)
+    // Metodo para validar un registro: 
+    public function show($user, $id)
     {
         try{
-            // Realizamos la consulta en la DB: 
-            $model = Permission::select('permission_type')->where('permission_type', $permission_type);
 
-            // Validamos que exista el permiso: 
-            $validatePermission = $model->first();
+            // Instanciamos el controlador del modelo 'PermissionPermission', para validar que el usuario tenga el permiso requerido: 
+            $permissionRoleController = new PermissionRoleController;
 
-            // Si existe, retornamos la respuesta: 
-            if($validatePermission){
+            // Validamos que el usuario tenga el permiso requerido:
+            $validatePermission = $permissionRoleController->show($user);
 
-                // Retornamos la respuesta: 
-                return response(['query' => true]);
+            $responseValidatePermission = $validatePermission->getOriginalContent();
+
+            // Si tiene permisos, validamos que tenga el permiso requerido: 
+            if($responseValidatePermission['query']){
+
+                // Iteramos la matriz de respuesta de la validacion: 
+                foreach($responseValidatePermission['permissions'] as $permission){
+
+                    // Iteramos los arrays que contienen los permisos: 
+                    foreach($permission as $value){
+
+                        // Si posee el permiso, autorizamos:
+                        if($value == $this->permissions[1]){
+                            $this->authorization = true;
+                        }
+                    }
+                }
+
+                // Validamos que tenga la autorizacion necesaria: 
+                if($this->authorization){
+
+                    // Realizamos la consulta en la DB: 
+                    $model = Permission::select('id_permission')->where('id_permission', $id);
+
+                    // Validamos que existan permisos en la DB: 
+                    $validatePermission = $model->first();
+
+                    // Si existen, los retornamos: 
+                    if($validatePermission){
+
+                        // Retornamos la respuesta: 
+                        return response(['query' => true, 'permission' => $validatePermission]);
+
+                    }else{
+                        // Retornamos el error: 
+                        return response(['query' => false, 'error' => 'No existe ese permiso en el sistema.'], 404);
+                    }
+
+                }else{
+                    // Retornamos el error: 
+                    return response(['query' => false, 'error' => 'Usted no tiene autorizacion para realizar esta peticion'], 401);
+                }
 
             }else{
                 // Retornamos el error: 
-                return response(['query' => false, 'error' => 'No existe ese permiso en el sistema'], 404);
+                return response(['query' => false, 'error' => 'Usted no tiene permisos para realizar esta peticion'], 401);
             }
+            
         }catch(Exception $e){
             // Retornamos el error: 
-            return response(['query' => false, 'error' => $e->getMessage()], 500);
+            return response(['query' =>  false, 'error' => $e->getMessage()], 500);
         }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
+    // Metodo para eliminar un registro: 
+    public function destroy($user, $id)
     {
-        //
-    }
+        try{
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
+            // Instanciamos el controlador del modelo 'PermissionRole', para validar que el usuario tenga el permiso requerido: 
+            $permissionRoleController = new PermissionRoleController;
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+            // Validamos que el usuario tenga el permiso requerido:
+            $validatePermission = $permissionRoleController->show($user);
+
+            $responseValidatePermission = $validatePermission->getOriginalContent();
+
+            // Si tiene permisos, validamos que tenga el permiso requerido: 
+            if($responseValidatePermission['query']){
+
+                // Iteramos la matriz de respuesta de la validacion: 
+                foreach($responseValidatePermission['permissions'] as $permission){
+
+                    // Iteramos los arrays que contienen los permisos: 
+                    foreach($permission as $value){
+
+                        // Si posee el permiso, autorizamos:
+                        if($value == $this->permissions[2]){
+                            $this->authorization = true;
+                        }
+                    }
+                }
+
+                // Validamos que tenga la autorizacion necesaria: 
+                if($this->authorization){
+
+                    // Realizamos la consulta en la DB: 
+                    $model = Permission::select('id_permission')->where('id_permission', $id);
+
+                    // Validamos que existan roles en la DB: 
+                    $validatePermission = $model->first();
+
+                    // Si existen, eliminamos el registro: 
+                    if($validatePermission){
+
+                        $model->delete();
+
+                        // Retornamos la respuesta: 
+                        return response()->noContent();
+
+                    }else{
+                        // Retornamos el error: 
+                        return response(['delete' => false, 'error' => 'No existe ese permiso en el sistema.'], 404);
+                    }
+
+                }else{
+                    // Retornamos el error: 
+                    return response(['delete' => false, 'error' => 'Usted no tiene autorizacion para realizar esta peticion'], 401);
+                }
+
+            }else{
+                // Retornamos el error: 
+                return response(['delete' => false, 'error' => 'Usted no tiene permisos para realizar esta peticion'], 401);
+            }
+            
+        }catch(Exception $e){
+            // Retornamos el error: 
+            return response(['delete' =>  false, 'error' => $e->getMessage()], 500);
+        }
+
     }
 }

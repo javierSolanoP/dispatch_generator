@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\services\main\GenderController;
+use App\Http\Controllers\services\main\PermissionController;
 use App\Http\Controllers\services\main\RoleController;
 use App\Http\Controllers\services\main\UserController;
 use Illuminate\Support\Facades\Route;
@@ -50,3 +51,7 @@ Route::get('/validate/genders/v1/{user}/{id}', [GenderController::class, 'show']
 
 // Ruta para eliminar un genero: 
 Route::delete('/genders/v1/{user}/{id}', [GenderController::class, 'delete']);
+
+
+// CONTROLADOR DE PERMISOS: 
+Route::get('/permissions/v1/{user}', [PermissionController::class, 'index']);

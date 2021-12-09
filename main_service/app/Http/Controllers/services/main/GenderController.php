@@ -51,7 +51,7 @@ class GenderController extends Controller
                     // Realizamos la consulta en la DB: 
                     $model = Gender::select('id_gender as id', 'gender');
 
-                    // Validamos que existan roles en la DB: 
+                    // Validamos que existan generos en la DB: 
                     $validateGender = $model->get();
 
                     // Si existen, los retornamos: 
@@ -62,7 +62,7 @@ class GenderController extends Controller
 
                     }else{
                         // Retornamos el error: 
-                        return response(['query' => false, 'error' => 'No existen roles en el sistema.'], 404);
+                        return response(['query' => false, 'error' => 'No existen generos en el sistema.'], 404);
                     }
 
                 }else{
@@ -131,7 +131,7 @@ class GenderController extends Controller
                             // Validamos el dato: 
                             $validateData = $validateClass->validateText(['name' => $name]);
 
-                            // Si el dato ha sido validado, validamos que no exista ese role en la DB: 
+                            // Si el dato ha sido validado, validamos que no exista ese genero en la DB: 
                             if($validateData['validate']){
 
                                 // Realizamos la consulta en la DB: 
@@ -143,7 +143,7 @@ class GenderController extends Controller
                                 // Si no existe, realizamos el registro: 
                                 if(!$valdiateRole){
 
-                                    // Registramos el role: 
+                                    // Registramos el genero: 
                                     Gender::create(['gender' => $name]);
 
                                     // Retornamos la respuesta: 
@@ -221,13 +221,13 @@ class GenderController extends Controller
                     $model = Gender::select('id_gender')->where('id_gender', $id);
 
                     // Validamos que existan generos en la DB: 
-                    $validateRole = $model->first();
+                    $validateGender = $model->first();
 
                     // Si existen, los retornamos: 
-                    if($validateRole){
+                    if($validateGender){
 
                         // Retornamos la respuesta: 
-                        return response(['query' => true, 'role' => $validateRole]);
+                        return response(['query' => true, 'gender' => $validateGender]);
 
                     }else{
                         // Retornamos el error: 
@@ -286,10 +286,10 @@ class GenderController extends Controller
                     $model = Gender::select('id_gender')->where('id_gender', $id);
 
                     // Validamos que existan roles en la DB: 
-                    $validateRole = $model->first();
+                    $validateGender = $model->first();
 
                     // Si existen, eliminamos el registro: 
-                    if($validateRole){
+                    if($validateGender){
 
                         $model->delete();
 
@@ -298,7 +298,7 @@ class GenderController extends Controller
 
                     }else{
                         // Retornamos el error: 
-                        return response(['delete' => false, 'error' => 'No existe ese role en el sistema.'], 404);
+                        return response(['delete' => false, 'error' => 'No existe ese genero en el sistema.'], 404);
                     }
 
                 }else{
