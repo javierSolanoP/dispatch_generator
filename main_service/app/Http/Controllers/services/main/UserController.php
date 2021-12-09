@@ -403,9 +403,11 @@ class UserController extends Controller
                                     continue;
                                 
                                 // Validamos si el dato contiene caracteres de tipo mayusculas: 
-                                }elseif(preg_match("/[A-Z]/", $input)){
+                                }elseif(preg_match("/[N]/", $input)){
 
-                                    $data[$input] = true;
+                                    // Reemplazamos la notacion 'camelCase' por 'snake_case': 
+                                    $data[str_replace('N', '_n', $input)] = $value;
+
                                 }else{
 
                                     // Almacenamos los datos que no esten vacios: 
@@ -414,8 +416,6 @@ class UserController extends Controller
 
                             }
                         }
-
-                        return $data;
 
                         // Actualizamos el registro con los datos recibidos: 
                         $model->update($data);
