@@ -288,27 +288,47 @@ class PermissionRoleController extends Controller
             // Si tiene permisos, validamos que tenga el permiso requerido: 
             if($responseValidatePermission['query']){
 
-                // Realizamos la consulta a la DB: 
-                $model = PermissionRole::select('role_id', 'permission_id')
+                // Iteramos la matriz de respuesta de la validacion: 
+                foreach($responseValidatePermission['role'] as $permission){
 
-                                        ->where('role_id', $role_id)
+                    // Iteramos los arrays que contienen los permisos: 
+                    foreach($permission as $value){
 
-                                        ->where('permission_id', $permission_id);
+                        // Si posee el permiso, autorizamos:
+                        if($value == $this->permissions[2]){
+                            $this->authorization = true;
+                        }
+                    }
+                }
 
-                // Validamos que exista el permiso para el role: 
-                $validatePermissionRole = $model->first();
+                // Validamos que tenga la autorizacion necesaria: 
+                if($this->authorization){
 
-                // Si existe, eliminamos el permiso para ese role: 
-                if($validatePermissionRole){
+                    // Realizamos la consulta a la DB: 
+                    $model = PermissionRole::select('role_id', 'permission_id')
 
-                    $model->delete();
+                                            ->where('role_id', $role_id)
 
-                    // Retornamos la respuesta: 
-                    return response()->noContent();
+                                            ->where('permission_id', $permission_id);
 
+                    // Validamos que exista el permiso para el role: 
+                    $validatePermissionRole = $model->first();
+
+                    // Si existe, eliminamos el permiso para ese role: 
+                    if($validatePermissionRole){
+
+                        $model->delete();
+
+                        // Retornamos la respuesta: 
+                        return response()->noContent();
+
+                    }else{
+                        // Retornamos el error: 
+                        return response(['delete' => false, 'error' => 'El role no tiene ese permiso'], 404);
+                    }
                 }else{
                     // Retornamos el error: 
-                    return response(['delete' => false, 'error' => 'El role no tiene ese permiso'], 404);
+                    return response(['delete' => false, 'error' => 'Usted no tiene autorizacion para realizar esta peticion'], 401);
                 }
 
             }else{
