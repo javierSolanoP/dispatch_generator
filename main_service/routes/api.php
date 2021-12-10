@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\services\main\GenderController;
 use App\Http\Controllers\services\main\PermissionController;
+use App\Http\Controllers\services\main\PermissionRoleController;
 use App\Http\Controllers\services\main\RoleController;
 use App\Http\Controllers\services\main\UserController;
 use Illuminate\Support\Facades\Route;
@@ -62,3 +63,11 @@ Route::get('/validate/permissions/v1/{user}/{id}', [PermissionController::class,
 
 // Ruta para eliminar un permiso: 
 Route::delete('/permissions/v1/{user}/{id}', [PermissionController::class, 'destroy']);
+
+
+// CONTROLADOR DE ROLES Y PERMISOS: 
+// Ruta para retoranar todos los permisos de cada role
+Route::get('/permissions-roles/v1/{user}', [PermissionRoleController::class, 'index']);
+
+// Ruta para retoranar todos los permisos de un role: 
+Route::get('/permissions-roles/v1/{user}/{userName}', [PermissionRoleController::class, 'show']);

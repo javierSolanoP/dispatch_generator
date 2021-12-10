@@ -25,7 +25,7 @@ class GenderController extends Controller
             $permissionRoleController = new PermissionRoleController;
 
             // Validamos que el usuario tenga el permiso requerido:
-            $validatePermission = $permissionRoleController->show($user);
+            $validatePermission = $permissionRoleController->show($user, $user);
 
             $responseValidatePermission = $validatePermission->getOriginalContent();
 
@@ -33,7 +33,7 @@ class GenderController extends Controller
             if($responseValidatePermission['query']){
 
                 // Iteramos la matriz de respuesta de la validacion: 
-                foreach($responseValidatePermission['permissions'] as $permission){
+                foreach($responseValidatePermission['role'] as $permission){
 
                     // Iteramos los arrays que contienen los permisos: 
                     foreach($permission as $value){
@@ -96,7 +96,7 @@ class GenderController extends Controller
                 $permissionRoleController = new PermissionRoleController;
 
                 // Validamos que el usuario tenga el permiso requerido:
-                $validatePermission = $permissionRoleController->show($user);
+                $validatePermission = $permissionRoleController->show($user, $user);
 
                 $responseValidatePermission = $validatePermission->getOriginalContent();
 
@@ -104,7 +104,7 @@ class GenderController extends Controller
                 if($responseValidatePermission['query']){
                     
                     // Iteramos la matriz de respuesta de la validacion: 
-                    foreach($responseValidatePermission['permissions'] as $permission){
+                    foreach($responseValidatePermission['role'] as $permission){
 
                         // Iteramos los arrays que contienen los permisos: 
                         foreach($permission as $value){
@@ -194,7 +194,7 @@ class GenderController extends Controller
             $permissionRoleController = new PermissionRoleController;
 
             // Validamos que el usuario tenga el permiso requerido:
-            $validatePermission = $permissionRoleController->show($user);
+            $validatePermission = $permissionRoleController->show($user, $user);
 
             $responseValidatePermission = $validatePermission->getOriginalContent();
 
@@ -202,7 +202,7 @@ class GenderController extends Controller
             if($responseValidatePermission['query']){
 
                 // Iteramos la matriz de respuesta de la validacion: 
-                foreach($responseValidatePermission['permissions'] as $permission){
+                foreach($responseValidatePermission['role'] as $permission){
 
                     // Iteramos los arrays que contienen los permisos: 
                     foreach($permission as $value){
@@ -259,7 +259,7 @@ class GenderController extends Controller
             $permissionRoleController = new PermissionRoleController;
 
             // Validamos que el usuario tenga el permiso requerido:
-            $validatePermission = $permissionRoleController->show($user);
+            $validatePermission = $permissionRoleController->show($user, $user);
 
             $responseValidatePermission = $validatePermission->getOriginalContent();
 
@@ -267,7 +267,7 @@ class GenderController extends Controller
             if($responseValidatePermission['query']){
 
                 // Iteramos la matriz de respuesta de la validacion: 
-                foreach($responseValidatePermission['permissions'] as $permission){
+                foreach($responseValidatePermission['role'] as $permission){
 
                     // Iteramos los arrays que contienen los permisos: 
                     foreach($permission as $value){
