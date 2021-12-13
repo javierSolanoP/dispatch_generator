@@ -80,3 +80,9 @@ Route::delete('/permissions-roles/v1/{user}/{role_id}/{permission_id}', [Permiss
 // CONTROLADOR DE SERVICIOS:
 // Ruta para retornar todos los servicios: 
 Route::get('/services/v1/{user}', [ServiceController::class, 'index']);
+
+// Ruta para validar si existe un servicio: 
+Route::get('/services/v1/{user}/{id}', [ServiceController::class, 'show']);
+
+// Ruta para eliminar un servicio: 
+Route::delete('/services/v1/{user}/{id}', [ServiceController::class, 'destroy']);
