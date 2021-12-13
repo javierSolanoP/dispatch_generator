@@ -15,9 +15,6 @@ class PermissionRoleController extends Controller
     // Los permisos que se le asigna a cada usuario: 
     protected $permissions = ['crear', 'leer', 'eliminar'];
 
-    // Inicializamos la propiedad que define la autorizacion de una peticion: 
-    protected $authorization = false;
-
     // Metodo para retornar todos los registros de la DB: 
     public function index($user)
     {
@@ -31,18 +28,8 @@ class PermissionRoleController extends Controller
             // Si tiene permisos, validamos que tenga el permiso requerido: 
             if($responseValidatePermission['query']){
 
-                // Iteramos la matriz de respuesta de la validacion: 
-                foreach($responseValidatePermission['role'] as $permission){
-
-                    // Iteramos los arrays que contienen los permisos: 
-                    foreach($permission as $value){
-
-                        // Si posee el permiso, autorizamos:
-                        if($value == $this->permissions[1]){
-                            $this->authorization = true;
-                        }
-                    }
-                }
+                // Si tiene el permiso, autorizamos: 
+                $this->validatePermission($responseValidatePermission['role'], $this->permissions[1]);
 
                 if($this->authorization){
 
@@ -111,18 +98,8 @@ class PermissionRoleController extends Controller
                 // Si tiene permiso, validamos que tenga permisos: 
                 if($responseValidatePermission['query']){
                     
-                    // Iteramos la matriz de respuesta de la validacion: 
-                    foreach($responseValidatePermission['role'] as $permission){
-
-                        // Iteramos los arrays que contienen los permisos: 
-                        foreach($permission as $value){
-
-                            // Si posee el permiso, autorizamos:
-                            if($value == $this->permissions[0]){
-                                $this->authorization = true;
-                            }
-                        }
-                    }
+                    // Si tiene el permiso, autorizamos: 
+                    $this->validatePermission($responseValidatePermission['role'], $this->permissions[0]);
 
                     // Validamos que tenga la autorizacion necesaria: 
                     if($this->authorization){
@@ -222,18 +199,8 @@ class PermissionRoleController extends Controller
 
             if(count($validatePermission) != 0){
 
-                // Iteramos la matriz de respuesta de la validacion: 
-                foreach($validatePermission as $permission){
-
-                    // Iteramos los arrays que contienen los permisos: 
-                    foreach($permission as $value){
-
-                        // Si posee el permiso, autorizamos:
-                        if($value == $this->permissions[1]){
-                            $this->authorization = true;
-                        }
-                    }
-                }
+                // Si tiene el permiso, autorizamos: 
+                $this->validatePermission($validatePermission, $this->permissions[1]);
 
                 if($this->authorization){
 
@@ -288,18 +255,8 @@ class PermissionRoleController extends Controller
             // Si tiene permisos, validamos que tenga el permiso requerido: 
             if($responseValidatePermission['query']){
 
-                // Iteramos la matriz de respuesta de la validacion: 
-                foreach($responseValidatePermission['role'] as $permission){
-
-                    // Iteramos los arrays que contienen los permisos: 
-                    foreach($permission as $value){
-
-                        // Si posee el permiso, autorizamos:
-                        if($value == $this->permissions[2]){
-                            $this->authorization = true;
-                        }
-                    }
-                }
+                // Si tiene el permiso, autorizamos: 
+                $this->validatePermission($responseValidatePermission['role'], $this->permissions[2]);
 
                 // Validamos que tenga la autorizacion necesaria: 
                 if($this->authorization){

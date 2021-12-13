@@ -4,6 +4,7 @@ use App\Http\Controllers\services\main\GenderController;
 use App\Http\Controllers\services\main\PermissionController;
 use App\Http\Controllers\services\main\PermissionRoleController;
 use App\Http\Controllers\services\main\RoleController;
+use App\Http\Controllers\services\main\ServiceController;
 use App\Http\Controllers\services\main\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -69,5 +70,13 @@ Route::delete('/permissions/v1/{user}/{id}', [PermissionController::class, 'dest
 // Ruta para retoranar todos los permisos de cada role
 Route::get('/permissions-roles/v1/{user}', [PermissionRoleController::class, 'index']);
 
-// Ruta para retoranar todos los permisos de un role: 
+// Ruta para retornar todos los permisos de un role: 
 Route::get('/permissions-roles/v1/{user}/{userName}', [PermissionRoleController::class, 'show']);
+
+// Ruta para eliminar el permiso de un role: 
+Route::delete('/permissions-roles/v1/{user}/{role_id}/{permission_id}', [PermissionRoleController::class, 'destroy']);
+
+
+// CONTROLADOR DE SERVICIOS:
+// Ruta para retornar todos los servicios: 
+Route::get('/services/v1/{user}', [ServiceController::class, 'index']);

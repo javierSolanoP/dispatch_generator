@@ -14,9 +14,6 @@ class UserController extends Controller
     // Los permisos que se le asigna a cada usuario: 
     protected $permissions = ['crear', 'leer', 'actualizar', 'eliminar'];
 
-    // Inicializamos la propiedad que define la autorizacion de una peticion: 
-    protected $authorization = false;
-
     // Los estados de sesion: 
     protected static $status = ['activa' => 1, 'inactiva' => 2, 'pendiente' => 3];
 
@@ -40,18 +37,8 @@ class UserController extends Controller
             // Si tiene permiso, validamos que tenga permisos: 
             if($responseValidatePermission['query']){
 
-                // Iteramos la matriz de respuesta de la validacion: 
-                foreach($responseValidatePermission['role'] as $permission){
-
-                    // Iteramos los arrays que contienen los permisos: 
-                    foreach($permission as $value){
-
-                        // Si posee el permiso, autorizamos:
-                        if($value == $this->permissions[1]){
-                            $this->authorization = true;
-                        }
-                    }
-                }
+                // Si tiene el permiso, autorizamos: 
+                $this->validatePermission($responseValidatePermission['role'], $this->permissions[1]);
 
                 if($this->authorization){
 
@@ -148,18 +135,8 @@ class UserController extends Controller
                 // Si tiene permiso, validamos que tenga permisos: 
                 if($responseValidatePermission['query']){
                     
-                    // Iteramos la matriz de respuesta de la validacion: 
-                    foreach($responseValidatePermission['role'] as $permission){
-
-                        // Iteramos los arrays que contienen los permisos: 
-                        foreach($permission as $value){
-
-                            // Si posee el permiso, autorizamos:
-                            if($value == $this->permissions[0]){
-                                $this->authorization = true;
-                            }
-                        }
-                    }
+                    // Si tiene el permiso, autorizamos: 
+                    $this->validatePermission($responseValidatePermission['role'], $this->permissions[0]);
 
                     // Validamos que tenga la autorizacion necesaria: 
                     if($this->authorization){
@@ -285,18 +262,8 @@ class UserController extends Controller
             // Si tiene permiso, validamos que tenga permisos: 
             if($responseValidatePermission['query']){
 
-                // Iteramos la matriz de respuesta de la validacion: 
-                foreach($responseValidatePermission['role'] as $permission){
-
-                    // Iteramos los arrays que contienen los permisos: 
-                    foreach($permission as $value){
-
-                        // Si posee el permiso, autorizamos:
-                        if($value == $this->permissions[1]){
-                            $this->authorization = true;
-                        }
-                    }
-                }
+                // Si tiene el permiso, autorizamos: 
+                $this->validatePermission($responseValidatePermission['role'], $this->permissions[1]);
 
                 if($this->authorization){
 
@@ -362,18 +329,8 @@ class UserController extends Controller
             // Si tiene permiso, validamos que tenga permisos: 
             if($responseValidatePermission['query']){
 
-                // Iteramos la matriz de respuesta de la validacion: 
-                foreach($responseValidatePermission['role'] as $permission){
-
-                    // Iteramos los arrays que contienen los permisos: 
-                    foreach($permission as $value){
-
-                        // Si posee el permiso, autorizamos:
-                        if($value == $this->permissions[2]){
-                            $this->authorization = true;
-                        }
-                    }
-                }
+                // Si tiene el permiso, autorizamos: 
+                $this->validatePermission($responseValidatePermission['role'], $this->permissions[2]);
 
                 if($this->authorization){
 
@@ -475,18 +432,8 @@ class UserController extends Controller
             // Si tiene permiso, validamos que tenga permisos: 
             if($responseValidatePermission['query']){
 
-                // Validamos que se encuentre registrado el usuario: 
-                foreach($responseValidatePermission['permissions'] as $permission){
-
-                    // Iteramos los arrays que contienen los permisos: 
-                    foreach($permission as $value){
-
-                        // Si posee el permiso, autorizamos:
-                        if($value == $this->permissions[3]){
-                            $this->authorization = true;
-                        }
-                    }
-                }
+                // Si tiene el permiso, autorizamos: 
+                $this->validatePermission($responseValidatePermission['role'], $this->permissions[3]);
 
                 if($this->authorization){
 
