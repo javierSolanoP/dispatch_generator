@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\services\main\ServiceUserController;
 use App\Http\Controllers\services\main\GenderController;
 use App\Http\Controllers\services\main\PermissionController;
 use App\Http\Controllers\services\main\PermissionRoleController;
@@ -86,3 +87,8 @@ Route::get('/services/v1/{user}/{id}', [ServiceController::class, 'show']);
 
 // Ruta para eliminar un servicio: 
 Route::delete('/services/v1/{user}/{id}', [ServiceController::class, 'destroy']);
+
+
+// CONTROLADOR DE SERVICIOS DE USUARIOS: 
+// Ruta para retornar todos los servicios de un usuario: 
+Route::get('/service-users/v1/{user}/{userName}', [ServiceUserController::class, 'index']);
