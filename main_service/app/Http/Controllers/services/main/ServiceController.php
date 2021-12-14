@@ -68,14 +68,13 @@ class ServiceController extends Controller
     }
 
     // Metodo para registarar un servicio en la DB: 
-    public function store(Request $request)
+    public function store(Request $request, $user)
     {
         // Asignamos los datos recibidos: 
-        $user = $request->input('user');
         $name = $request->input('name');
 
         // Validamos que no existan datos vacios: 
-        if(!empty($user) && !empty($name)){
+        if(empty($name)){
 
             try{
                 // Instanciamos el controlador del modelo 'PermissionRole', para validar que el usuario tenga el permiso requerido: 

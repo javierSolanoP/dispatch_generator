@@ -178,7 +178,7 @@ Cuando se requiera asignar un permiso a un role, realice la petición en el sigu
 POST: 'api/permissions-roles/v1/{user}'
 ```
 
-La petición debe llevar los ID's del role y el permiso que se le asignará, como contenido en formato 'JSON': 
+La petición debe llevar los ID's del role y del permiso que se le asignará, como contenido en formato 'JSON': 
 
 ```
 {
@@ -193,4 +193,36 @@ Cuando se requiera eliminar el permiso de un role, realice la petición en el si
 
 ```
 DELETE: 'api/permissions-roles/v1/{user}/{roleId}/{permissionId}'
+```
+
+### SERVICIOS
+
+#### - OBTENER
+
+Cuando se requiera obtener todos los servicios registrados en el sistema, realice la petición en el siguiente endpoint: 
+
+```
+GET: 'api/services/v1/{user}'
+```
+
+Cuando se requiera validar si un servicio está registrado en el sistema, realice la petición al siguiente endpoint:
+
+```
+GET: 'api/'services/v1/{user}/{id}'
+```
+
+#### - REGISTRAR
+
+Cuando se requiera regsitrar un servicio en el sistema, realice la petición en el siguiente endpoint: 
+
+```
+POST: 'api/services/v1/{user}'
+```
+
+La petición debe llevar el nombre del servicio, como contenido en formato 'JSON': 
+
+```
+{
+    "name": character  // Nombre del servicio
+}
 ```

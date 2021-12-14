@@ -97,8 +97,8 @@ Route::get('/services/v1/{user}', [ServiceController::class, 'index']);
 // Ruta para validar si existe un servicio: 
 Route::get('/services/v1/{user}/{id}', [ServiceController::class, 'show']);
 
-// Ruta para registrar el permiso de un role: 
-Route::post('/roles/v1/{user}', [RoleController::class, 'store']);
+// Ruta para registrar un servicio: 
+Route::post('/services/v1/{user}', [ServiceController::class, 'store']);
 
 // Ruta para eliminar un servicio: 
 Route::delete('/services/v1/{user}/{id}', [ServiceController::class, 'destroy']);
