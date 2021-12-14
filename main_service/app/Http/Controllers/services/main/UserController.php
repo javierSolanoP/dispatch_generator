@@ -97,14 +97,13 @@ class UserController extends Controller
     }
 
     // Metodo para registrar un usuario en la DB: 
-    public function store(Request $request)
+    public function store(Request $request, $user)
     {
         // Asignamos los datos recibidos: 
         $identification = $request->input('identification');
-        $user = $request->input('user');
-        $userName = $request->input('user_name');
+        $userName = $request->input('userName');
         $name = $request->input('name');
-        $lastName = $request->input('last_name');
+        $lastName = $request->input('lastName');
         $email = $request->input('email');
         $password = $request->input('password');
         $confirmPassword = $request->input('confirmPassword');
@@ -113,7 +112,6 @@ class UserController extends Controller
 
         // Validamos que no existan datos vacios: 
         if(!empty($identification)
-        && !empty($user)
         && !empty($userName)
         && !empty($name)
         && !empty($lastName)
@@ -142,10 +140,10 @@ class UserController extends Controller
                     if($this->authorization){
 
                         // Iteramos los datos recibidos, para validar que no sea un intento XSS
-                        foreach($request->all() as $data){
+                        foreach($request->all() as $value){
 
                             // Validamos el dato: 
-                            $validateXSS = stristr($data, '</script>');
+                            $validateXSS = stristr($value, '</script>');
 
                             // Si se encuentra el script, retornamos el error: 
                             if($validateXSS){

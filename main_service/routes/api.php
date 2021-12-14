@@ -27,6 +27,9 @@ Route::get('/role/users/v1/{user}/{id_role?}', [UserController::class, 'index'])
 // Ruta para retornar un usuario especifico: 
 Route::get('/users/v1/{user}/{identification}', [UserController::class, 'show']);
 
+// Ruta para registrar un usuario: 
+Route::post('/users/v1/{user}', [UserController::class, 'store']);
+
 // Ruta para actualizar el registro de un usuario: 
 Route::put('/users/v1/{user}/{identification}', [UserController::class, 'update']);
 

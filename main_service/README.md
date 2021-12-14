@@ -1,66 +1,75 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# SERVICIO PRINCIPAL - USUARIOS
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+En éste servicio se administrará las peticiones de los demás servicios del sistema, además, el servicio cuenta con sus propios endpoint's para recibir peticiones. El servicio principal también se encarga de administrar la información del modulo de administración del sistema.
 
-## About Laravel
+Por lo tanto, el servicio también dispone de un frontend para éste módulo. Tanto el servicio como el frontend, fueron desarrollados con lenguaje de programación 'php 7.3' usando su framework 'Laravel 8'. La base de datos está implementada en un RDBMS 'MySQL'. En esta DB se encuentran las entidades relacionadas con: usuarios, roles, permisos, sesiones, géneros, servicios.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## API Endpoint's
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+NOTA: Los controladores se encuentran en el path: 'App\Http\Controllers\services\main'. Los endpoit's que se encuentren entre llaves '{ }', son parámetros que recibe el endpoit.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+El parámetro 'user' hace referencia al nombre de usuario, usuario que realiza la petición al servicio, el usuario debe estar registrado en el sistema. Esto se hace con el fin de prevenir una petición maliciosa.
 
-## Learning Laravel
+### USUARIOS: 
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+#### - OBTENER
+Cuando se requiera obtener todos los usuarios que se encuentran registrados en el sistema, realice la peticion en el siguiente endpoint: 
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+```
+GET: 'api/role/users/v1/{user}'
+```
 
-## Laravel Sponsors
+Si lo que requiere es obtener todos los usuarios de un role específico, añada  el siguiente parámetro al endpoint: 
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+```
+GET: 'api/role/users/v1/{user}/{id_role}'
+```
 
-### Premium Partners
+Cuando se requiera obtener la información de un usuario específico, realice la petición en el siguiente endpoint: 
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[CMS Max](https://www.cmsmax.com/)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
-- **[Romega Software](https://romegasoftware.com)**
+```
+GET: 'api/users/v1/{user}/{identification}'
+```
 
-## Contributing
+#### - REGISTRAR
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Cuando se rquiera registrar un usuario en el sistema, realice la petición en el siguiente endpoint: 
 
-## Code of Conduct
+```
+POST: 'api/users/v1/{user}'
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+La petición debe llevar los datos del usuario a registrar, como contenido en formato 'JSON': 
+ 
+```
+{
+    "identification": number,       // No de documento de ciudadanía
+    "userName": character,          // Nombre de usuario que se le asignará
+    "name": character,              // Nombre del usuario
+    "lastName": character           // Apellido del usuario
+    "email": character              // Correo electrónico del usuario
+    "password": character           // Contraseña de la cuenta del usuario
+    "confirmPassword": character    // Confirmación de la contraseña
+    "role": number,                 // ID del role que se le asignará
+    "gender": number                // ID del género sexual que se le asignará
+}
+```
 
-## Security Vulnerabilities
+#### - ACTUALIZAR
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Cuando se rquiera actualizar un usuario en el sistema, realice la petición añadiendo el parámetro 'identification', el cuál representa la identficación del usuario registrado al que se le actualizará la información en la DB, en el siguiente endpoint: 
 
-## License
+```
+PUT: 'api/users/v1/{user}/{identification}'
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+La petición debe llevar los datos del usuario a actualizar, como contenido en formato 'JSON'; Con los mismos atributos que el contenido de registro, exceptuando los atributos 'identification' y los que no contendrán ninguna información. 
+
+
+#### - ELIMINAR
+
+Cuando se requiera eliminar un usuario en el sistema, realice la petición junto con el parámetro 'identification', el cuál representa la identificación del usuario a eliminar, en el siguiente endpoint: 
+
+```
+DELETE: 'api/users/v1/{user}/{identification}'
+```
