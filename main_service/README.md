@@ -1,6 +1,6 @@
 # SERVICIO PRINCIPAL - USUARIOS
 
-En éste servicio se administrará las peticiones de los demás servicios del sistema, además, el servicio cuenta con sus propios endpoint's para recibir peticiones. El servicio principal también se encarga de administrar la información del modulo de administración del sistema.
+En éste servicio se administrará las peticiones de los demás servicios del sistema, además, el servicio cuenta con sus propios endpoint's para recibir peticiones. El servicio principal también se encarga de administrar la información del mó dulo de administración del sistema.
 
 Por lo tanto, el servicio también dispone de un frontend para éste módulo. Tanto el servicio como el frontend, fueron desarrollados con lenguaje de programación 'php 7.3' usando su framework 'Laravel 8'. La base de datos está implementada en un RDBMS 'MySQL'. En esta DB se encuentran las entidades relacionadas con: usuarios, roles, permisos, sesiones, géneros, servicios.
 
@@ -22,7 +22,7 @@ GET: 'api/role/users/v1/{user}'
 Si lo que requiere es obtener todos los usuarios de un role específico, añada  el siguiente parámetro al endpoint: 
 
 ```
-GET: 'api/role/users/v1/{user}/{id_role}'
+GET: 'api/role/users/v1/{user}/{roleId}'
 ```
 
 Cuando se requiera obtener la información de un usuario específico, realice la petición en el siguiente endpoint: 
@@ -72,4 +72,125 @@ Cuando se requiera eliminar un usuario en el sistema, realice la petición junto
 
 ```
 DELETE: 'api/users/v1/{user}/{identification}'
+```
+
+### ROLES
+
+#### - OBTENER
+
+Cuando se requiera obtener todos los roles que se encuentran registrados en el sistema, realice la petición en el siguiente endpoint: 
+
+```
+GET: 'api/roles/v1/{user}'
+```
+
+Cuando se requiera validar si un role está registrado en el sistema, realice la petición al siguiente endpoint: 
+
+```
+GET: 'api/validate/roles/v1/{user}/{id}'
+```
+
+#### - REGISTRAR
+
+Cuando se requiera registrar un role en el sistema, realice la petición en el siguiente endpoint: 
+
+```
+POST: 'api/roles/v1/{user}'
+```
+
+La petición debe llevar el dato del role a registrar, como contenido en formato 'JSON': 
+
+```
+{
+    "name": character // Nombre del role
+}
+```
+
+#### ELIMINAR
+
+Cuando se requiera eliminar un role en el sistema, realice la petición en el siguiente endpoint: 
+
+```
+DELETE: 'api/roles/v1/{user}/{id}'
+```
+
+### GÉNEROS
+
+#### - OBTENER
+
+Cuando se requiera obtener todos los géneros que se encuentran registrados en el sistema, realice la petición en el siguiente endpoint: 
+
+```
+GET: 'api/genders/v1/{user}'
+```
+
+Cuando se requiera validar si un género está registrado en el sistema, realice la petición al siguiente endpoint: 
+
+```
+GET: 'api/validate/genders/v1/{user}/{id}'
+```
+
+#### - REGISTRAR
+
+Cuando se requiera registrar un género en el sistema, realice la petición en el siguiente endpoint: 
+
+```
+POST: 'api/genders/v1/{user}'
+```
+
+La petición debe llevar el dato del género a registrar, como contenido en formato 'JSON': 
+
+```
+{
+    "name": character // Nombre del género
+}
+```
+
+#### ELIMINAR
+
+Cuando se requiera eliminar un género en el sistema, realice la petición en el siguiente endpoint: 
+
+```
+DELETE: 'api/genders/v1/{user}/{id}'
+``` 
+
+### PERMISOS DE ROLES
+
+#### - OBTENER
+
+Cuando se requiera obtener todos los permisos de cada role, realice la petición en el siguiente endpoint: 
+
+```
+GET: 'api/permissions-roles/v1/{user}'
+```
+
+Cuando se requiera obtener todos los permisos de un usuario específico, realice la peticion con el parámetro 'userName', el cuál hace referencia al nombre de usuario del que obtendrá los permisos, el siguiente endpoint: 
+
+```
+GET: 'api/permissions-roles/v1/{user}/{userName}'
+```
+
+#### - REGISTRAR
+
+Cuando se requiera asignar un permiso a un role, realice la petición en el siguiente endpoint: 
+
+```
+POST: 'api/permissions-roles/v1/{user}'
+```
+
+La petición debe llevar los ID's del role y el permiso que se le asignará, como contenido en formato 'JSON': 
+
+```
+{
+    "roleId": number,          // ID del role
+    "permissionId": number     // ID del permiso
+}
+``` 
+
+#### - ELIMINAR
+
+Cuando se requiera eliminar el permiso de un role, realice la petición en el siguiente endpoint: 
+
+```
+DELETE: 'api/permissions-roles/v1/{user}/{roleId}/{permissionId}'
 ```

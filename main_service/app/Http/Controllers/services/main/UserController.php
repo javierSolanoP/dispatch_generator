@@ -22,7 +22,7 @@ class UserController extends Controller
     protected static $avatar_women = 'women.png'; 
 
     // Metodo para retornar todos los usuarios registrados en la DB: 
-    public function index($user, $id_role = null)
+    public function index($user, $roleId = null)
     {
         try{
 
@@ -60,9 +60,9 @@ class UserController extends Controller
                                 );
 
                     // Si se recibe un role especifico, filtramos por el role solicitado: 
-                    if($id_role != null){
+                    if($roleId != null){
                         // Con filtro:
-                        $users = $model->where('role_id', '=', $id_role)->get();
+                        $users = $model->where('role_id', '=', $roleId)->get();
                     }else{
                         // Sin filtro: 
                         $users = $model->get();

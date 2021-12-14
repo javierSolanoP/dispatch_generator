@@ -75,18 +75,15 @@ class PermissionRoleController extends Controller
     }
 
     // Metodo para registrar el permiso de un role: 
-    public function store(Request $request)
+    public function store(Request $request, $user)
     {
 
         // Asignamos los datos recibidos: 
-        $user = $request->input('user');
-        $role_id = $request->input('role_id');
-        $permission_id = $request->input('permission_id');
+        $roleId = $request->input('role_id');
+        $permissionId = $request->input('permission_id');
 
         // Validamos que no existan datos vacios: 
-        if(!empty($user) 
-        && !empty($role_id)
-        && !empty($permission_id)){
+        if(!empty($roleId) && !empty($permissionId)){
 
             try{
 
@@ -122,8 +119,8 @@ class PermissionRoleController extends Controller
                         $validateClass = new Validate;
 
                         // Validamos el dato: 
-                        $validateData = $validateClass->validateNumber(['role_id' => $role_id,
-                                                                        'permission_id' => $permission_id]);
+                        $validateData = $validateClass->validateNumber(['role_id' => $roleId,
+                                                                        'permission_id' => $permissionId]);
 
                         // Si el dato ha sido validado, validamos que no exista ese role en la DB: 
                         if($validateData['validate']){
@@ -131,9 +128,9 @@ class PermissionRoleController extends Controller
                             // Realizamos la consulta en la DB: 
                             $model = PermissionRole::select('permission_id')
                                         
-                                                    ->where('permission_id', $permission_id)
+                                                    ->where('permission_id', $permissionId)
 
-                                                    ->where('role_id', $role_id);
+                                                    ->where('role_id', $roleId);
 
                             // Validamos si existe el permiso para el role: 
                             $validatePermission = $model->first();
@@ -142,8 +139,8 @@ class PermissionRoleController extends Controller
                             if(!$validatePermission){
 
                                 // Registramos el permiso: 
-                                PermissionRole::create(['role_id' => $role_id,
-                                                        'permission_id' => $permission_id]);
+                                PermissionRole::create(['role_id' => $roleId,
+                                                        'permission_id' => $permissionId]);
 
                                 // Retornamos la respuesta: 
                                 return response(['register' => true], 201);
@@ -243,7 +240,7 @@ class PermissionRoleController extends Controller
     }
 
     // Metodo para eliminar el permiso de un role: 
-    public function destroy($user, $role_id, $permission_id)
+    public function destroy($user, $roleId, $permissionId)
     {
         try{
 
@@ -264,9 +261,9 @@ class PermissionRoleController extends Controller
                     // Realizamos la consulta a la DB: 
                     $model = PermissionRole::select('role_id', 'permission_id')
 
-                                            ->where('role_id', $role_id)
+                                            ->where('role_id', $roleId)
 
-                                            ->where('permission_id', $permission_id);
+                                            ->where('permission_id', $permissionId);
 
                     // Validamos que exista el permiso para el role: 
                     $validatePermissionRole = $model->first();

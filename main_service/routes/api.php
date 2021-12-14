@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Route;
 
 // CONTROLADOR DE USUARIOS: 
 // Ruta para retornar todos los usuarios: 
-Route::get('/role/users/v1/{user}/{id_role?}', [UserController::class, 'index']);
+Route::get('/role/users/v1/{user}/{roleId?}', [UserController::class, 'index']);
 
 // Ruta para retornar un usuario especifico: 
 Route::get('/users/v1/{user}/{identification}', [UserController::class, 'show']);
@@ -44,6 +44,9 @@ Route::get('/roles/v1/{user}', [RoleController::class, 'index']);
 // Ruta para validar si existe un role: 
 Route::get('/validate/roles/v1/{user}/{id}', [RoleController::class, 'show']);
 
+// Ruta para registrar un role: 
+Route::post('/roles/v1/{user}', [RoleController::class, 'store']);
+
 // Ruta para eliminar un role: 
 Route::delete('/roles/v1/{user}/{id}', [RoleController::class, 'destroy']);
 
@@ -54,6 +57,9 @@ Route::get('/genders/v1/{user}', [GenderController::class, 'index']);
 
 // Ruta para validar si existe un genero:
 Route::get('/validate/genders/v1/{user}/{id}', [GenderController::class, 'show']);
+
+// Ruta para registrar un role: 
+Route::post('/genders/v1/{user}', [GenderController::class, 'store']);
 
 // Ruta para eliminar un genero: 
 Route::delete('/genders/v1/{user}/{id}', [GenderController::class, 'destroy']);
@@ -74,11 +80,14 @@ Route::delete('/permissions/v1/{user}/{id}', [PermissionController::class, 'dest
 // Ruta para retoranar todos los permisos de cada role
 Route::get('/permissions-roles/v1/{user}', [PermissionRoleController::class, 'index']);
 
-// Ruta para retornar todos los permisos de un role: 
+// Ruta para retornar todos los permisos de un usuario: 
 Route::get('/permissions-roles/v1/{user}/{userName}', [PermissionRoleController::class, 'show']);
 
+// Ruta para registrar el permiso de un role: 
+Route::post('/permissions-roles/v1/{user}', [RoleController::class, 'store']);
+
 // Ruta para eliminar el permiso de un role: 
-Route::delete('/permissions-roles/v1/{user}/{role_id}/{permission_id}', [PermissionRoleController::class, 'destroy']);
+Route::delete('/permissions-roles/v1/{user}/{roleId}/{permissionId}', [PermissionRoleController::class, 'destroy']);
 
 
 // CONTROLADOR DE SERVICIOS:
@@ -87,6 +96,9 @@ Route::get('/services/v1/{user}', [ServiceController::class, 'index']);
 
 // Ruta para validar si existe un servicio: 
 Route::get('/services/v1/{user}/{id}', [ServiceController::class, 'show']);
+
+// Ruta para registrar el permiso de un role: 
+Route::post('/roles/v1/{user}', [RoleController::class, 'store']);
 
 // Ruta para eliminar un servicio: 
 Route::delete('/services/v1/{user}/{id}', [ServiceController::class, 'destroy']);
