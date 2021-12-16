@@ -107,3 +107,12 @@ Route::delete('/services/v1/{user}/{id}', [ServiceController::class, 'destroy'])
 // CONTROLADOR DE SERVICIOS DE USUARIOS: 
 // Ruta para retornar todos los servicios de un usuario: 
 Route::get('/service-users/v1/{user}/{userName}', [ServiceUserController::class, 'index']);
+
+// Ruta para validar si existen servicios asignados a un usuario: 
+Route::get('/service-users/');
+
+// Ruta para asignar un servicio a un usuario: 
+Route::post('/service-users/v1/{user}', [ServiceUserController::class, 'store']);
+
+// Ruta para eliminar un servicio a un usuario: 
+Route::delete('/service-users/v1/{user}/{userId}/{serviceId}', [ServiceUserController::class, 'destroy']);

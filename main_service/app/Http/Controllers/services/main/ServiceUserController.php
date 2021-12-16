@@ -15,7 +15,7 @@ class ServiceUserController extends Controller
     protected $permissions = ['crear', 'leer', 'eliminar'];
 
     // Metodo para retornar todos los servicios de un usuario: 
-    public function index($user)
+    public function index($user, $userName)
     {
         try{
 
@@ -45,6 +45,8 @@ class ServiceUserController extends Controller
 
                                 ->select('services.name as service')
 
+                                ->where('user_name', $userName)
+
                                 ->get();
 
                     // Validamos que existan servicios para ese usuario: 
@@ -55,7 +57,7 @@ class ServiceUserController extends Controller
 
                     }else{
                         // Retornamos el error: 
-                        return response(['query' => false, 'error' => 'No existen servicios en el sistema'], 404);
+                        return response(['query' => false, 'error' => 'No existen servicios asignados al usuario'], 404);
                     }
 
                 }else{
@@ -75,17 +77,14 @@ class ServiceUserController extends Controller
     }
 
     // Metodo para asignar un servicio a un usuario: 
-    public function store(Request $request)
+    public function store(Request $request, $user)
     {
         // Asignamos los datos recibidos: 
-        $user = $request->input('user');
         $user_id = $request->input('user_id');
         $service_id = $request->input('service_id');
 
         // Validamos que no existan datos vacios: 
-        if(!empty($user) 
-        && !empty($user_id)
-        && !empty($service_id)){
+        if(!empty($user_id) && !empty($service_id)){
 
             try{
 
@@ -243,7 +242,7 @@ class ServiceUserController extends Controller
     }
 
     // Metodo para eliminar un servicio de un usuario: 
-    public function destroy($user, $user_id, $service_id)
+    public function destroy($user, $userId, $serviceId)
     {
         try{
 
@@ -265,9 +264,9 @@ class ServiceUserController extends Controller
                 if($this->authorization){
 
                     // Realizamos la consulta en la DB: 
-                    $model = ServiceUser::select('id_service')
-                                        ->where('user_id', $user_id)
-                                        ->where('id_service', $service_id);
+                    $model = ServiceUser::select('id_service_user')
+                                        ->where('user_id', $userId)
+                                        ->where('service_id', $serviceId);
 
                     // Validamos que existan roles en la DB: 
                     $validateServiceUser = $model->first();

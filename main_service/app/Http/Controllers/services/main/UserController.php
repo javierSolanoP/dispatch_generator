@@ -51,9 +51,9 @@ class UserController extends Controller
                                 
                                 ->select(
                                     'users.identification',
-                                    'users.user_name',
+                                    'users.user_name as user',
                                     'users.name', 
-                                    'users.last_name',
+                                    'users.last_name as lastName',
                                     'users.email',
                                     'roles.name as role',
                                     'genders.gender'

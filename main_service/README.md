@@ -1,6 +1,6 @@
 # SERVICIO PRINCIPAL - USUARIOS
 
-En éste servicio se administrará las peticiones de los demás servicios del sistema, además, el servicio cuenta con sus propios endpoint's para recibir peticiones. El servicio principal también se encarga de administrar la información del mó dulo de administración del sistema.
+En éste servicio se administrará las peticiones de los demás servicios del sistema, además, el servicio cuenta con sus propios endpoint's para recibir peticiones. El servicio principal también se encarga de administrar la información del módulo de administración del sistema.
 
 Por lo tanto, el servicio también dispone de un frontend para éste módulo. Tanto el servicio como el frontend, fueron desarrollados con lenguaje de programación 'php 7.3' usando su framework 'Laravel 8'. La base de datos está implementada en un RDBMS 'MySQL'. En esta DB se encuentran las entidades relacionadas con: usuarios, roles, permisos, sesiones, géneros, servicios.
 
@@ -43,15 +43,15 @@ La petición debe llevar los datos del usuario a registrar, como contenido en fo
  
 ```
 {
-    "identification": number,       // No de documento de ciudadanía
-    "userName": character,          // Nombre de usuario que se le asignará
-    "name": character,              // Nombre del usuario
-    "lastName": character           // Apellido del usuario
-    "email": character              // Correo electrónico del usuario
-    "password": character           // Contraseña de la cuenta del usuario
-    "confirmPassword": character    // Confirmación de la contraseña
-    "role": number,                 // ID del role que se le asignará
-    "gender": number                // ID del género sexual que se le asignará
+    "identification": number,        // No de documento de ciudadanía
+    "userName": character,           // Nombre de usuario que se le asignará
+    "name": character,               // Nombre del usuario
+    "lastName": character,           // Apellido del usuario
+    "email": character,              // Correo electrónico del usuario
+    "password": character,           // Contraseña de la cuenta del usuario
+    "confirmPassword": character,    // Confirmación de la contraseña
+    "role": number,                  // ID del role que se le asignará
+    "gender": number                 // ID del género sexual que se le asignará
 }
 ```
 
@@ -187,6 +187,7 @@ La petición debe llevar los ID's del role y del permiso que se le asignará, co
 }
 ``` 
 
+
 #### - ELIMINAR
 
 Cuando se requiera eliminar el permiso de un role, realice la petición en el siguiente endpoint: 
@@ -208,7 +209,7 @@ GET: 'api/services/v1/{user}'
 Cuando se requiera validar si un servicio está registrado en el sistema, realice la petición al siguiente endpoint:
 
 ```
-GET: 'api/'services/v1/{user}/{id}'
+GET: 'api/services/v1/{user}/{id}'
 ```
 
 #### - REGISTRAR
@@ -225,4 +226,12 @@ La petición debe llevar el nombre del servicio, como contenido en formato 'JSON
 {
     "name": character  // Nombre del servicio
 }
+```
+
+#### - ELIMINAR
+
+Cuando se requiera eliminar un servicio de un usuario, realice la petición en el siguiente endpoint: 
+
+```
+DELETE: 'api/service-users/v1/{user}/{userId}/{serviceId}'
 ```
