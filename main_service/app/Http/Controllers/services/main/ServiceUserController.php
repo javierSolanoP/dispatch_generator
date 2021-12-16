@@ -15,7 +15,7 @@ class ServiceUserController extends Controller
     protected $permissions = ['crear', 'leer', 'eliminar'];
 
     // Metodo para retornar todos los servicios de un usuario: 
-    public function index($user, $userName)
+    public function index($user)
     {
         try{
 
@@ -43,11 +43,11 @@ class ServiceUserController extends Controller
 
                                 ->join('services', 'services.id_service', '=', 'service_users.service_id')
 
-                                ->select('services.name as service')
+                                ->select('users.user_name as user', 'services.name as service')
 
-                                ->where('user_name', $userName)
-
-                                ->get();
+                                ->get()
+                                
+                                ->groupBy('user');
 
                     // Validamos que existan servicios para ese usuario: 
                     if(count($model) != 0){

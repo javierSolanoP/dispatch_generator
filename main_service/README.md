@@ -10,7 +10,7 @@ NOTA: Los controladores se encuentran en el path: 'App\Http\Controllers\services
 
 El parámetro 'user' hace referencia al nombre de usuario, usuario que realiza la petición al servicio, el usuario debe estar registrado en el sistema. Esto se hace con el fin de prevenir una petición maliciosa.
 
-### USUARIOS: 
+### USUARIOS
 
 #### - OBTENER
 Cuando se requiera obtener todos los usuarios que se encuentran registrados en el sistema, realice la peticion en el siguiente endpoint: 
@@ -231,6 +231,47 @@ La petición debe llevar el nombre del servicio, como contenido en formato 'JSON
 #### - ELIMINAR
 
 Cuando se requiera eliminar un servicio de un usuario, realice la petición en el siguiente endpoint: 
+
+```
+DELETE: 'api/services/v1/{user}/{id}'
+```
+
+### SERVICIOS DE USUARIOS
+
+#### - OBTENER 
+
+Cuando se requiera retornar todos los servicios asignados a cada usuario, realice la petición en el siguiente endpoint: 
+
+```
+GET: 'api/service-users/v1/{user}'
+```
+
+Cuando se requiera retornar todos los servicios de un usuario específico, realice la petición en el siguiente endpoint: 
+
+```
+GET: 'api/service-users/v1/{user}/{userName}'
+```
+
+#### - REGISTRAR 
+
+Cuando se requiera registrar un usuario en el sistema, realice la petición en el siguiente endpoint: 
+
+```
+POST: 'api/service-users/v1/{user}' 
+```
+
+La petición debe llevar los ID's del servicio y del usuario, como contenido en formato 'JSON': 
+
+```
+{
+    "userId": number,       // ID del usuario
+    "serviceId": number     // ID del servicio
+}
+```
+
+#### - ELIMINAR
+
+Cuando se requiera eliminar el servicio de un usuario, realice la petición en el siguiente endpoint: 
 
 ```
 DELETE: 'api/service-users/v1/{user}/{userId}/{serviceId}'
