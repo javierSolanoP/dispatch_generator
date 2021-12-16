@@ -164,7 +164,7 @@ Cuando se requiera obtener todos los permisos de cada role, realice la petición
 GET: 'api/permissions-roles/v1/{user}'
 ```
 
-Cuando se requiera obtener todos los permisos de un usuario específico, realice la peticion con el parámetro 'userName', el cuál hace referencia al nombre de usuario del que obtendrá los permisos, el siguiente endpoint: 
+Cuando se requiera obtener todos los permisos de un usuario específico, añada el parámetro 'userName' al endpoint, el cuál hace referencia al nombre de usuario del que obtendrá los permisos:
 
 ```
 GET: 'api/permissions-roles/v1/{user}/{userName}'
@@ -206,7 +206,7 @@ Cuando se requiera obtener todos los servicios registrados en el sistema, realic
 GET: 'api/services/v1/{user}'
 ```
 
-Cuando se requiera validar si un servicio está registrado en el sistema, realice la petición al siguiente endpoint:
+Cuando se requiera validar si un servicio está registrado en el sistema, añada el siguiente parámetro al endpoint:
 
 ```
 GET: 'api/services/v1/{user}/{id}'
@@ -246,7 +246,7 @@ Cuando se requiera retornar todos los servicios asignados a cada usuario, realic
 GET: 'api/service-users/v1/{user}'
 ```
 
-Cuando se requiera retornar todos los servicios de un usuario específico, realice la petición en el siguiente endpoint: 
+Cuando se requiera retornar todos los servicios de un usuario específico, añada el siguiente parámetro al endpoint: 
 
 ```
 GET: 'api/service-users/v1/{user}/{userName}'
