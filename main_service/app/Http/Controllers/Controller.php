@@ -12,6 +12,9 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
+    // Declaramos la propiedad 'userAdmin', para realizar las peticiones al servicio 'main' desde el módulo 'admin': 
+    protected static $userAdmin = 'root';
+
     // Inicializamos la propiedad que define la autorizacion de una peticion: 
     protected $authorization = false;
     

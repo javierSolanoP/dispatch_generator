@@ -5,9 +5,12 @@ namespace App\Http\Controllers\services\main;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\services\main\validate\Validate;
 use App\Models\User;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+
+use function Symfony\Component\String\s;
 
 class UserController extends Controller
 {
@@ -19,7 +22,13 @@ class UserController extends Controller
 
     // Los avatar que se le asigna dependiendo el 'genero' de cada usuario:
     protected static $avatar_men = 'men.png';
-    protected static $avatar_women = 'women.png'; 
+    protected static $avatar_women = 'women.png';
+    
+    // ESTADOS DE SESION: 
+    // Declaramos las propiedades que describen los tipos de estados: 
+    protected $inactive = 'Inactiva';
+    protected $active   = 'Activa';
+    protected $pending  = 'Pendiente';
 
     // Metodo para retornar todos los usuarios registrados en la DB: 
     public function index($user, $roleId = null)
@@ -242,6 +251,243 @@ class UserController extends Controller
             // Retornamos el error: 
             return response(['register' => false, 'error' => "No pueden existir campos vacios"]);
         }
+    }
+
+    // Metodo para actualizar el estado de session: 
+    public function updateSession($userName, $status)
+    {
+        try{
+
+            // Realizamos la consulta a la DB: 
+            $modelUser = User::select('session_id')->where('user_name', $userName);
+
+            // Validamos que exista ese estado: 
+            $validateSession = $modelUser->first();
+
+            // Si existe, actualizamos el estado: 
+            if($validateSession){
+
+                // Realizamos la consulta a la entidad 'Session' de la DB: 
+                $modelSession = DB::table('sessions')->select('id_session')
+                                    
+                                    ->where('type_of_session', $status);
+
+                // Validamos que exista el estado: 
+                $validateSession = $modelSession->first();
+
+                // Si existe, actualizamos el estado: 
+                if($validateSession){
+
+                    $modelUser->update(['session_id' => $validateSession->id_session]);
+
+                    // Retornamos la respuesta: 
+                    return ['update' => true];
+
+                }else{
+                    // Retornamos el error: 
+                    return ['update' => false, 'error' => 'No existe ese estado de sesion en el sistema'];
+                }
+
+            }else{
+                // Retornamos el error: 
+                return ['update' => false, 'error' => 'No existe ese usuario en el sistema'];
+            }
+
+        }catch(Exception $e){
+            // Retornamos el error: 
+            return ['update' => false, 'error' => $e->getMessage()];
+        }
+    }
+
+    // Metodo para iniciar sesion: 
+    public function login(Request $request, $user)
+    {
+        // Asignamos los datos recibidos: 
+        $userName = $request->input('userName');
+        $password = $request->input('password');
+
+        // Validamos que no existan datos vacios: 
+        if(!empty($userName) && !empty($password)){
+
+            try{
+
+                // Instanciamos el controlador del modelo 'PermissionRole', para validar que el usuario tenga el permiso requerido: 
+                $permissionRoleController = new PermissionRoleController;
+    
+                // Validamos que el usuario tenga el permiso requerido:
+                $validatePermission = $permissionRoleController->show($user, $user);
+    
+                $responseValidatePermission = $validatePermission->getOriginalContent();
+    
+                // Si tiene permiso, validamos que tenga permisos: 
+                if($responseValidatePermission['query']){
+    
+                    // Si tiene el permiso, autorizamos: 
+                    $this->validatePermission($responseValidatePermission['role'], $this->permissions[2]);
+    
+                    if($this->authorization){
+
+                        // Realizamos la consulta a la DB: 
+                        $model = DB::table('users')->select('password', 'session_id')->where('user_name', $userName);
+
+                        // Validamos que exista el usuario: 
+                        $validateUser = $model->first();
+
+                        // Si existe, validamos el hash almacenado en la DB y la password ingresada: 
+                        if($validateUser){
+
+                            // Instanciamos la clase 'Validate', para validar: 
+                            $validateClass = new Validate; 
+
+                            // Validamos el hash y la password: 
+                            $validate = $validateClass->validateHash($validateUser->password, $password);
+
+                            // Si coinciden, actualizamos el estado de sesion: 
+                            if($validate['validate']){
+
+                                // Actualizamos el estado de sesion:
+                                $updateSession = $this->updateSession($userName, $this->active);
+
+                                if($updateSession['update']){
+
+                                    // Realizamos la super consulta a la DB: 
+                                    $model = DB::table('users')
+
+                                            ->join('sessions', 'sessions.id_session', '=', 'users.session_id')
+
+                                            ->join('permission_roles', 'permission_roles.role_id', '=', 'users.role_id')
+
+                                            ->join('permissions', 'permissions.id_permission', '=', 'permission_roles.permission_id')
+
+                                            ->join('service_users', 'service_users.user_id', '=', 'users.id_user')
+
+                                            ->join('services', 'services.id_service', '=', 'service_users.service_id')
+                                            
+                                            ->select(
+                                                'users.user_name',
+                                                'users.email',
+                                                'sessions.type_of_session as status',
+                                                'permissions.permission_type as permission',
+                                                'services.name as service'
+                                            )
+                                            
+                                            ->where('user_name', '=', $userName)->get()
+                                            
+                                            ->groupBy('service');
+
+                                    // Retornamos la respuesta: 
+                                    return response(['login' => true, 'content' => $model], 200);
+
+                                }else{
+                                    // Retornamos el error: 
+                                    return response(['login' => false, 'error' => $updateSession['error']], 403);
+                                }
+                                
+                            }else{
+                                // Retornamos el error: 
+                                return response(['login' => false, 'error' => 'Contraseña incorrecta'], 403);
+                            }
+
+                        }else{
+                            // Retornamos el error: 
+                            return response(['login' => false, 'error' => 'No existe ese usuario en el sistema'], 404);
+                        }
+    
+                    }else{
+                        // Retornamos el error: 
+                        return response(['login' => false, 'error' => 'Usted no tiene autorizacion para realizar esta peticion'], 401);
+                    }
+    
+                }else{
+                    // Retornamos el error: 
+                    return response(['login' => false, 'error' => 'Usted no tiene permisos para realizar esta peticion'], 401);
+                }
+    
+            }catch(Exception $e){
+                // Retornamos el error: 
+                return response(['login' => false, 'error' => $e->getMessage()], 500);
+            }
+
+        }else{
+            // Retornamos el error: 
+            return response(['login' => false, 'error' => 'No pueden existir datos vacios'], 403);
+        }
+    }
+
+    // Metodo para terminar sesion: 
+    public function logout(Request $request, $user)
+    {
+        // Asignamos los datos recibidos: 
+        $userName = $request->input('userName');
+
+        // Validamos que no exista dato vacio: 
+        if(!empty($userName)){
+
+            try{
+
+                // Instanciamos el controlador del modelo 'PermissionRole', para validar que el usuario tenga el permiso requerido: 
+                $permissionRoleController = new PermissionRoleController;
+    
+                // Validamos que el usuario tenga el permiso requerido:
+                $validatePermission = $permissionRoleController->show($user, $user);
+    
+                $responseValidatePermission = $validatePermission->getOriginalContent();
+    
+                // Si tiene permiso, validamos que tenga permisos: 
+                if($responseValidatePermission['query']){
+    
+                    // Si tiene el permiso, autorizamos: 
+                    $this->validatePermission($responseValidatePermission['role'], $this->permissions[2]);
+    
+                    if($this->authorization){
+
+                        // Realizamos la consulta a la DB: 
+                        $model = DB::table('users')->select('session_id')->where('user_name', $userName);
+
+                        // Validamos que exista el usuario: 
+                        $validateUser = $model->first();
+
+                        // Si existe, actualizamos el estado de sesion:
+                        if($validateUser){
+
+                            // Actualizamos el estado de sesion:
+                            $updateSession = $this->updateSession($userName, $this->inactive);
+
+                            if($updateSession['update']){
+
+                                // Retornamos la respuesta: 
+                                return response()->noContent();
+
+                            }else{
+                                // Retornamos el error: 
+                                return response(['logout' => false, 'error' => $updateSession['error']], 403);
+                            }
+
+                        }else{
+                            // Retornamos el error: 
+                            return response(['logout' => false, 'error' => 'No existe ese usuario en el sistema'], 404);
+                        }
+    
+                    }else{
+                        // Retornamos el error: 
+                        return response(['logout' => false, 'error' => 'Usted no tiene autorizacion para realizar esta peticion'], 401);
+                    }
+    
+                }else{
+                    // Retornamos el error: 
+                    return response(['logout' => false, 'error' => 'Usted no tiene permisos para realizar esta peticion'], 401);
+                }
+    
+            }catch(Exception $e){
+                // Retornamos el error: 
+                return response(['logout' => false, 'error' => $e->getMessage()], 500);
+            }
+
+        }else{
+            // Retornamos el error: 
+            return response(['logout' => false, 'error' => 'No pueden existir datos vacios'], 403);
+        }
+    
     }
 
     // Metodo para retornar la informacion de un usuario registrado en la DB: 

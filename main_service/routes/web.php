@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\admin\dashboard\DashBoardController;
 use App\Http\Controllers\admin\dashboard\MonthlyPaymentController;
-use App\Http\Controllers\admin\user_module\UserController;
+use App\Http\Controllers\admin\Home\HomeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,9 +16,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Login: 
-Route::get('/', [UserController::class, 'index'])->name('home');
-Route::post('/login', [UserController::class, 'store'])->name('login');
+// Home: 
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::post('/login', [HomeController::class, 'store'])->name('login');
 
 // Dashboard: 
 Route::get('/dashboard', [DashBoardController::class, 'index'])->name('dashboard');

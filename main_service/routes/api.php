@@ -27,6 +27,12 @@ Route::get('/role/users/v1/{user}/{roleId?}', [UserController::class, 'index']);
 // Ruta para retornar un usuario especifico: 
 Route::get('/users/v1/{user}/{identification}', [UserController::class, 'show']);
 
+// Ruta para iniciar sesion: 
+Route::post('/users/login/v1/{user}', [UserController::class, 'login']);
+
+// Ruta para terminar sesion: 
+Route::post('/users/logout/v1/{user}', [UserController::class, 'logout']);
+
 // Ruta para registrar un usuario: 
 Route::post('/users/v1/{user}', [UserController::class, 'store']);
 

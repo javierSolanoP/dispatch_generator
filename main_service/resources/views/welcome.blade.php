@@ -21,7 +21,7 @@
                     @csrf
                     <div class="container-input">
                         <label for="user">Usuario</label>
-                        <input type="text" name="user" required placeholder=" nombre de usuario...">
+                        <input type="text" name="userName" required placeholder=" nombre de usuario...">
                     </div>
                     <div class="container-input">
                         <label for="password">Contraseña</label>
