@@ -10,17 +10,16 @@
     <title>@include('components/title')</title>
 </head>
 <body>
-    @yield('content')
     <section>
         <article>
             <div class="container-left">
-                <h1>MODULO ADMINISTRADOR @yield('content')</h1>
+                <h1>MODULO ADMINISTRADOR</h1>
             </div>
             <div class="container-right">
                 <form action="{{ route('login') }}" method="POST">
                     @csrf
                     <div class="container-input">
-                        <label for="user">Usuario</label>
+                        <label for="userName">Usuario</label>
                         <input type="text" name="userName" required placeholder=" nombre de usuario...">
                     </div>
                     <div class="container-input">
@@ -30,12 +29,11 @@
                     <input type="submit" value="Ingresar">
                 </form>
                 <br>
-              @if(isset($error))
-                  <div class="error">
-                      <h2>{{ $error }}</h2>
-                  </div>
-              @endif
-
+                @if(isset($error))
+                    <div class="error">
+                        <h2>{{ $error }}</h2>
+                    </div>
+                @endif
             </div>
         </article>
     </section>

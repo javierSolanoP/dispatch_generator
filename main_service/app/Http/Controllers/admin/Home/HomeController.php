@@ -9,6 +9,10 @@ use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
+
+    // Declaramos la propiedad que hace referencia al nombre del servicio al que pertenece el módulo administrador: 
+    protected static $serviceMain = 'Principal';
+
     public function index()
     {
         // Si no existe un estado de sesion, retornamos la vista principal:
@@ -40,79 +44,47 @@ class HomeController extends Controller
             // Iniciamos sesion del usuario: 
             $login = $userController->login($request, self::$userAdmin);
 
+            // $responseLogin = $login->getOriginalContent();
+
             return $login;
 
+            // if($responseLogin['login']){
+
+            //     $data = [];
+
+            //     foreach($responseLogin['content'] as $service){
+
+            //         foreach($service as $array){
+                        
+            //             if($array->service == self::$serviceMain){
+                
+            //                 foreach($array as $content => $value){
+                                
+            //                     if($content == 'permission'){
+                                
+            //                         $data[] = $value;
+            //                     }
+            //                 }
+
+            //             }
+
+            //         }
+                    
+            //     }
+
+            //     return $data; 
+
+            // }else{
+            //     // Redirigimos al usuario a la vista principal e imprimimos el error en pantalla: 
+            //     $error = $responseLogin['error'];
+            //     return view('welcome', ['error' => $error]);
+            // }
 
         }catch(Exception $e){
             // Redirigimos a la vista de error '500': 
             return view('error.500');
         }
-        //     // Si existe, validamos el hash con la password ingresada: 
-        //     if($validateUser){
-
-    
-
-        //             // ESTADOS: 
-        //             static $active = 'Activa';
-        //             static $inactive = 'Inactiva';
-
-        //             // Si el estado de la sesion es 'Activa' o 'Inactiva', concedemos acceso al sistema: 
-        //             if(($statusSession == $active) || ($statusSession == $inactive)){
-
-        //                 // Asignamos un array 'data', que alamcena la informaccion que se envia a la sesion 'user': 
-        //                 $data = ['id' => $validateUser->id_user, 'user_name' => $validateUser->user_name, 'name' => $validateUser->name, 'last_name' => $validateUser->last_name, 'avatar' => $validateUser->avatar];
-
-        //                 // Si el estado de la sesion es 'Activa': 
-        //                 if($statusSession == $active){
-
-        //                     // Asignamos la sesion 'status', para que el usuario no deba autenticarse de nuevo: 
-        //                     $_SESSION['status'] = $statusSession;
-
-        //                     // Redirigimos al usuario a la vista de dashboard y enviamos sus datos a la vista: 
-        //                     $_SESSION['user'] = $data;
-                            
-        //                 }else{
-
-        //                     // Instanciamos el controlador del modelo 'Session', para obtener el 'id' de la sesion:
-        //                     $sessionController = new SessionController;
-
-        //                     // Consultamos el estado de sesion 'Activa' en el controlador: 
-        //                     $session = $sessionController->show($active);
-
-        //                     // Obtenemos el 'id' del estado: 
-        //                     $id_session = $session['session']['id_session'];
-
-                            
-        //                 }
-                        
-        //                 // Redirigimos a la vista del 'dashboard': 
-        //                 return redirect()->route('dashboard');
-
-        //             }else{
-
-        //                 // Redirigimos al usuario a la vista principal e imprimimos el error en pantalla: 
-        //                 $error = 'Usted solicitó un restablecimiento de contraseña';
-        //                 return view('welcome', ['error' => $error]);
-        //             }
-
-        //         }else{
-
-        //             // Redirigimos al usuario a la vista principal e imprimimos el error en pantalla: 
-        //             $error = 'Contraseña incorrecta';
-        //             return view('welcome', ['error' => $error]);
-        //         }
-
-        //     }else{
-
-        //         // Redirigimos al usuario a la vista principal e imprimimos el error en pantalla: 
-        //         $error = 'No existe ese usuario en el sistema.';
-        //         return view('welcome', ['error' => $error]);
-        //     }
-
-        // }catch(Exception $e){
-        //     // Redirigimos a la vista de error '500': 
-        //     return view('error.500');
-        // }
+        
     }
 
     // // Metodo para retornar la informacion de un usuario especifico: 

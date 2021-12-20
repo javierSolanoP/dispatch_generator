@@ -350,33 +350,29 @@ class UserController extends Controller
 
                                 if($updateSession['update']){
 
-                                    // Realizamos la super consulta a la DB: 
-                                    $model = DB::table('users')
+                                    // Instanciamos los controladores 'PermissionRole' y 'ServiceUser': 
+                                    $permissionRoleController = new PermissionRoleController;
+                                    $serviceUserController    = new ServiceUserController;
 
-                                            ->join('sessions', 'sessions.id_session', '=', 'users.session_id')
+                                    // Asignamos el contenido de las respuestas:
+                                    $responseUser            = DB::table('users')->join('sessions', 'sessions.id_session', '=', 'users.session_id')
 
-                                            ->join('permission_roles', 'permission_roles.role_id', '=', 'users.role_id')
+                                                                ->select(
+                                                                            'users.user_name as user',
+                                                                            'users.email',
+                                                                            'users.avatar',
+                                                                            'sessions.type_of_session as status'
+                                                                        )
+                                                                    
+                                                                ->where('user_name', '=', $userName)->first();
 
-                                            ->join('permissions', 'permissions.id_permission', '=', 'permission_roles.permission_id')
-
-                                            ->join('service_users', 'service_users.user_id', '=', 'users.id_user')
-
-                                            ->join('services', 'services.id_service', '=', 'service_users.service_id')
-                                            
-                                            ->select(
-                                                'users.user_name',
-                                                'users.email',
-                                                'sessions.type_of_session as status',
-                                                'permissions.permission_type as permission',
-                                                'services.name as service'
-                                            )
-                                            
-                                            ->where('user_name', '=', $userName)->get()
-                                            
-                                            ->groupBy('service');
-
+                                    $responserPermissionRole = $permissionRoleController->show(self::$userAdmin, $userName)->getOriginalContent();
+                                    $responseServiceUser     = $serviceUserController->show(self::$userAdmin, $userName)->getOriginalContent();
                                     // Retornamos la respuesta: 
-                                    return response(['login' => true, 'content' => $model], 200);
+                                    return response(['login' => true, 
+                                                     'content' => ['user' => $responseUser, 
+                                                                   'services' => $responseServiceUser['services'], 
+                                                                   'permissions' => $responserPermissionRole['role']]], 200);
 
                                 }else{
                                     // Retornamos el error: 
