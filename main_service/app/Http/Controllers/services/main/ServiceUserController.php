@@ -213,6 +213,8 @@ class ServiceUserController extends Controller
 
                                 ->where('user_name', $userName)
 
+                                ->orderBy('service', 'desc')
+
                                 ->get();
                     
                     if(count($model) != 0){

@@ -368,6 +368,7 @@ class UserController extends Controller
 
                                     $responserPermissionRole = $permissionRoleController->show(self::$userAdmin, $userName)->getOriginalContent();
                                     $responseServiceUser     = $serviceUserController->show(self::$userAdmin, $userName)->getOriginalContent();
+                                    
                                     // Retornamos la respuesta: 
                                     return response(['login' => true, 
                                                      'content' => ['user' => $responseUser, 

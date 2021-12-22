@@ -13,13 +13,17 @@ class HomeController extends Controller
     // Declaramos la propiedad que hace referencia al nombre del servicio al que pertenece el módulo administrador: 
     protected static $serviceMain = 'Principal';
 
+    // Declaramos las propiedades de estado de sesion: 
+    protected static $active = 'Activa';
+    protected static $inactive = 'Inactiva';
+
     public function index()
     {
         // Si no existe un estado de sesion, retornamos la vista principal:
         if(isset($_SESSION['status'])){
 
             // Si el estado de la sesion es 'Activa', redirigimos directamente a la ruta 'dashboard': 
-            if($_SESSION['status'] == 'Activa'){
+            if($_SESSION['status'] == self::$active){
 
                 // Regirigimos: 
                 return redirect()->route('dashboard');
@@ -34,52 +38,57 @@ class HomeController extends Controller
         }
     }
 
-    public function store(Request $request)
+    public function login(Request $request)
     {
         try{
 
-            // Instanciamos el controlador 'User' del servicio 'main', para validar si existe el usuario: 
-            $userController = new UserController;
+            // Si el estado de la sesion es 'Activa', redirigimos directamente a la ruta 'dashboard': 
+            if($_SESSION['status'] == self::$inactive){
 
-            // Iniciamos sesion del usuario: 
-            $login = $userController->login($request, self::$userAdmin);
+                // Instanciamos el controlador 'User' del servicio 'main', para validar si existe el usuario: 
+                $userController = new UserController;
 
-            // $responseLogin = $login->getOriginalContent();
+                // Iniciamos sesion del usuario: 
+                $login = $userController->login($request, self::$userAdmin);
 
-            return $login;
+                $responseLogin = $login->getOriginalContent();
 
-            // if($responseLogin['login']){
+                if($responseLogin['login']){
 
-            //     $data = [];
+                    // Asignamos los datos de la respuesta en las siguientes sesiones: 
+                    $_SESSION['user'] = $responseLogin['content']['user'];
+                    $_SESSION['services'] = $responseLogin['content']['services'];
+                    $_SESSION['permissions'] = $responseLogin['content']['permissions'];
 
-            //     foreach($responseLogin['content'] as $service){
+                    // Recorremos la matriz de la sesion 'services', para validar si tiene acceso al servicio principal: 
+                    foreach($_SESSION['services'] as $services){
 
-            //         foreach($service as $array){
-                        
-            //             if($array->service == self::$serviceMain){
-                
-            //                 foreach($array as $content => $value){
-                                
-            //                     if($content == 'permission'){
-                                
-            //                         $data[] = $value;
-            //                     }
-            //                 }
+                        if($services->service == self::$serviceMain){
 
-            //             }
+                            // Iniciamos la sesion del usuario localmente: 
+                            $_SESSION['status'] = self::$active;
 
-            //         }
-                    
-            //     }
+                            // Redirigimos al usuario al dashboard: 
+                            return redirect()->route('dashboard');
+                        }
+                    }
 
-            //     return $data; 
+                    // Redirigimos al usuario a la vista principal e imprimimos el error en pantalla: 
+                    $error = 'Usted no tiene autorización para ingresar a este módulo';
+                    return view('welcome', ['error' => $error]);
 
-            // }else{
-            //     // Redirigimos al usuario a la vista principal e imprimimos el error en pantalla: 
-            //     $error = $responseLogin['error'];
-            //     return view('welcome', ['error' => $error]);
-            // }
+                }else{
 
+                    // Redirigimos al usuario a la vista principal e imprimimos el error en pantalla: 
+                    $error = $responseLogin['error'];
+                    return view('welcome', ['error' => $error]);
+                }
+
+            }else{
+                // Regirigimos: 
+                return redirect()->route('dashboard');
+            }
+    
         }catch(Exception $e){
             // Redirigimos a la vista de error '500': 
             return view('error.500');
@@ -87,76 +96,47 @@ class HomeController extends Controller
         
     }
 
-    // // Metodo para retornar la informacion de un usuario especifico: 
-    // public function show($id)
-    // {
-    //     // Realizamos la consulta en la DB: 
-    //     $model = User::where('id_user', $id);
+    // Metodo para terminar sersion del usuario: 
+    public function logout(Request $request){
 
-    //     // Validamos que exista el registro en la entidad: 
-    //     $validateUser = $model->first();
+        try{
 
-    //     // Si existe, retornamos la informacion: 
-    //     if($validateUser){
+            // Si el estado de la sesion es 'Inactiva', redirigimos directamente a la ruta 'home': 
+            if($_SESSION['status'] == self::$active){
 
-    //         // Retornamos la respuesta: 
-    //         return ['query' => true, 'user' => $validateUser];
+                // Instanciamos el controlador 'User' del servicio 'main', para validar si existe el usuario: 
+                $userController = new UserController;
 
-    //     }else{
-    //         // Retornamos el error: 
-    //         return ['query' => false, 'error' => 'No existe ese usuario en el sistema.'];
-    //     }
-    // }
+                // Iniciamos sesion del usuario: 
+                $logout = $userController->logout($request, self::$userAdmin);
 
-    // // Metodo para actualizar el estado de sesion: 
-    // public function updateSession($user_name, $status)
-    // {
-    //     // Realizamos la consulta a la DB: 
-    //     $modelUser = User::where('user_name', $user_name);
+                if($logout->status() == 204){
 
-    //     // Validamos que exista el registro en la entidad: 
-    //     $validateUser = $modelUser->first();
+                    // Terminamos la sesion del usuario localmente: 
+                    $_SESSION['status'] = self::$inactive;
 
-    //     // Si existe, validamos que exista ese estado de sesion: 
-    //     if($validateUser){
+                    // Redirigimos al usuario a la vista principal: 
+                    return redirect()->route('home');
 
-    //         // Realizamos la consulta a la DB:
-    //         $modelSession = Session::select('id_session')
-    //                               ->where('type_of_session', $status);
+                }else{
 
-    //         // Validamos que exista el registro en la entidad: 
-    //         $validateSession = $modelSession->first();
+                    // Obtenemos el contenido del error: 
+                    $responseLogout = $logout->getOriginalContent();
 
-    //         // Si existe, actualizamos el estado de sesion: 
-    //         if($validateSession){
+                    // Redirigimos al usuario a la vista principal e imprimimos el error en pantalla: 
+                    $error = $responseLogout['error'];
+                    return view('welcome', ['error' => $error]);
+                }
 
-    //             try{
+            }else{
+                // Regirigimos: 
+                return redirect()->route('home');
+            }
+            
+        }catch(Exception $e){
+            // Redirigimos a la vista de error '500': 
+            return view('error.500');
+        }
+    }
 
-    //                 $modelUser->update([
-    //                     'session_id' => $validateSession['id_session']
-    //                 ]);
-
-    //                 // Retornamos la respuesta: 
-    //                 return ['update' => true];
-                        
-    //             }catch(Exception $e){
-    //                 // Retornamos el error: 
-    //                 return ['update' => false, 'error' => $e->getMessage()];
-    //             }
-
-    //         }else{
-    //             // Retornamos el error: 
-    //             return ['update' => false, 'error' => 'No existe ese estado de sesion.'];
-    //         }
-
-    //     }else{
-    //         // Retornamos el error: 
-    //         return ['update' => false, 'error' => 'No existe ese usuario en el sistema.'];
-    //     }
-    // }
-
-    // public function destroy($id)
-    // {
-    //     //
-    // }
 }

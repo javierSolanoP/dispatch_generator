@@ -18,9 +18,9 @@ use Illuminate\Support\Facades\Route;
 
 // Home: 
 Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::post('/login', [HomeController::class, 'store'])->name('login');
+Route::post('/login', [HomeController::class, 'login'])->name('login');
+Route::post('/logout', [HomeController::class, 'logout'])->name('logout');
 
 // Dashboard: 
 Route::get('/dashboard', [DashBoardController::class, 'index'])->name('dashboard');
-Route::get('/logout', [DashBoardController::class, 'logout'])->name('logout');
 Route::get('/dashboard/mensualidades', [MonthlyPaymentController::class, 'index'])->name('monthly_payments');
