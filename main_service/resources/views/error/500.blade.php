@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
     <!-- Styles -->
-    <link rel="stylesheet" href="css/500.css">
+    <link rel="stylesheet" href="css/error/500.css">
     <title>Internal server error</title>
 </head>
 <body>

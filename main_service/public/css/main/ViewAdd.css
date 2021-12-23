@@ -7,6 +7,29 @@
     align-items: center;
 }
 
+section .container-back-button{
+    width: 80%;
+    height: 6vh;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.container-back-button .back-button{
+    width: 7%;
+    height: 100%;
+    border-radius: 100%;
+    border: none;
+    background-color: rgb(110, 202, 18);
+    font-size: 180%;
+    color: #fff;
+    cursor: pointer;
+}
+
+.container-back-button .back-button:hover{
+   transform: scale(110%);
+}
+
 section .addUser{
     width: 80%;
     height: 30vh;

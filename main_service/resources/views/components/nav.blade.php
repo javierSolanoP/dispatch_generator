@@ -7,7 +7,7 @@
     <ul>
         @foreach ($services as $service)
             <li>
-                <a href="{{ route('monthly_payments') }}">{{$service->service}}</a>
+                <a href="{{ route($service->service) }}">{{$service->service}}</a>
             </li>
         @endforeach
     </ul>

@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers\admin\dashboard;
 
-use App\Http\Controllers\admin\Home\HomeController;
 use App\Http\Controllers\Controller;
 use Exception;
 use Illuminate\Http\Request;
 
-class DashBoardController extends Controller
+class MainController extends Controller
 {
     // Declaramos las propiedades de estado de sesion: 
     protected static $active = 'Activa';
@@ -28,14 +27,18 @@ class DashBoardController extends Controller
                     // Asignamos el contenido de las sesiones: 
                     $user = $_SESSION['user'];
                     $services = $_SESSION['services'];
+                    $permissions = $_SESSION['permissions'];
+
+                    // return $services;
 
                     // Retornamos la vista 'dashboard': 
-                    return view('dashboard.dashboard', ['user' => $user, 
-                                                        'services' => $services]);
+                    return view('dashboard.main.main', ['user' => $user, 
+                                                        'services' => $services,
+                                                        'permissions' => $permissions]);
         
                 }else{
                     // Retornamos la vista 'dashboard': 
-                    return view('dashboard.dashboard');
+                    return view('dashboard.main.main');
                 } 
 
             }else{
@@ -50,5 +53,4 @@ class DashBoardController extends Controller
         }
         
     }
-
 }

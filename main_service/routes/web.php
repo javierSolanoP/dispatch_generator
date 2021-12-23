@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\admin\dashboard\DashBoardController;
+use App\Http\Controllers\admin\dashboard\MainController;
 use App\Http\Controllers\admin\dashboard\MonthlyPaymentController;
 use App\Http\Controllers\admin\Home\HomeController;
 use Illuminate\Support\Facades\Route;
@@ -23,4 +24,5 @@ Route::post('/logout', [HomeController::class, 'logout'])->name('logout');
 
 // Dashboard: 
 Route::get('/dashboard', [DashBoardController::class, 'index'])->name('dashboard');
-Route::get('/dashboard/mensualidades', [MonthlyPaymentController::class, 'index'])->name('monthly_payments');
+Route::get('/dashboard/main', [MainController::class, 'index'])->name('Principal');
+Route::get('/dashboard/monthly-payments', [MonthlyPaymentController::class, 'index'])->name('Mensualidades');

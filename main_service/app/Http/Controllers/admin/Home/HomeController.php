@@ -42,51 +42,43 @@ class HomeController extends Controller
     {
         try{
 
-            // Si el estado de la sesion es 'Activa', redirigimos directamente a la ruta 'dashboard': 
-            if($_SESSION['status'] == self::$inactive){
+            // Instanciamos el controlador 'User' del servicio 'main', para validar si existe el usuario: 
+            $userController = new UserController;
 
-                // Instanciamos el controlador 'User' del servicio 'main', para validar si existe el usuario: 
-                $userController = new UserController;
+            // Iniciamos sesion del usuario: 
+            $login = $userController->login($request, self::$userAdmin);
 
-                // Iniciamos sesion del usuario: 
-                $login = $userController->login($request, self::$userAdmin);
+            $responseLogin = $login->getOriginalContent();
 
-                $responseLogin = $login->getOriginalContent();
+            if($responseLogin['login']){
 
-                if($responseLogin['login']){
+                // Asignamos los datos de la respuesta en las siguientes sesiones: 
+                $_SESSION['user'] = $responseLogin['content']['user'];
+                $_SESSION['services'] = $responseLogin['content']['services'];
+                $_SESSION['permissions'] = $responseLogin['content']['permissions'];
 
-                    // Asignamos los datos de la respuesta en las siguientes sesiones: 
-                    $_SESSION['user'] = $responseLogin['content']['user'];
-                    $_SESSION['services'] = $responseLogin['content']['services'];
-                    $_SESSION['permissions'] = $responseLogin['content']['permissions'];
+                // Recorremos la matriz de la sesion 'services', para validar si tiene acceso al servicio principal: 
+                foreach($_SESSION['services'] as $services){
 
-                    // Recorremos la matriz de la sesion 'services', para validar si tiene acceso al servicio principal: 
-                    foreach($_SESSION['services'] as $services){
+                    if($services->service == self::$serviceMain){
 
-                        if($services->service == self::$serviceMain){
+                        // Iniciamos la sesion del usuario localmente: 
+                        $_SESSION['status'] = self::$active;
 
-                            // Iniciamos la sesion del usuario localmente: 
-                            $_SESSION['status'] = self::$active;
-
-                            // Redirigimos al usuario al dashboard: 
-                            return redirect()->route('dashboard');
-                        }
+                        // Redirigimos al usuario al dashboard: 
+                        return redirect()->route('dashboard');
                     }
-
-                    // Redirigimos al usuario a la vista principal e imprimimos el error en pantalla: 
-                    $error = 'Usted no tiene autorización para ingresar a este módulo';
-                    return view('welcome', ['error' => $error]);
-
-                }else{
-
-                    // Redirigimos al usuario a la vista principal e imprimimos el error en pantalla: 
-                    $error = $responseLogin['error'];
-                    return view('welcome', ['error' => $error]);
                 }
 
+                // Redirigimos al usuario a la vista principal e imprimimos el error en pantalla: 
+                $error = 'Usted no tiene autorización para ingresar a este módulo';
+                return view('welcome', ['error' => $error]);
+
             }else{
-                // Regirigimos: 
-                return redirect()->route('dashboard');
+
+                // Redirigimos al usuario a la vista principal e imprimimos el error en pantalla: 
+                $error = $responseLogin['error'];
+                return view('welcome', ['error' => $error]);
             }
     
         }catch(Exception $e){
@@ -129,7 +121,7 @@ class HomeController extends Controller
                 }
 
             }else{
-                // Regirigimos: 
+                // Redirigimos: 
                 return redirect()->route('home');
             }
             
