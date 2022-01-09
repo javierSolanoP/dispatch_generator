@@ -21,3 +21,4 @@ Route::get('/', function () {
 
 // Route::post('/send', [DispatchController::class, 'collection'])->name('process');
 Route::post('/send', [ControllersDispatchController::class, 'import'])->name('process');
+Route::post('/receive', [ControllersDispatchController::class, 'export'])->name('generate');

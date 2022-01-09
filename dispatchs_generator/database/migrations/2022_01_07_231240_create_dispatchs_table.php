@@ -19,9 +19,11 @@ class CreateDispatchsTable extends Migration
             $table->id('id_dispatch');
             $table->string('invoice_number');
             $table->string('name_route');
-            $table->date('date');
+            $table->string('date');
             $table->string('hour');
             $table->string('minute');
+            $table->string('authorized_dispatch');
+            $table->string('type_of_dispatch');
             $table->string('usage_rate');
             $table->string('plate');
             $table->unsignedBigInteger('vehicle_class_id');

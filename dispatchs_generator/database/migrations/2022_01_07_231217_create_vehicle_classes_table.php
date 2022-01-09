@@ -17,15 +17,16 @@ class CreateVehicleClassesTable extends Migration
         Schema::create('vehicle_classes', function (Blueprint $table) {
             $table->id('id_vehicle_class');
             $table->string('class');
+            $table->string('name');
             $table->string('number_of_passengers');
             $table->timestamps();
         });
 
-        DB::insert('insert into vehicle_classes (class, number_of_passengers) values (?, ?)', ['1', '2']);
-        DB::insert('insert into vehicle_classes (class, number_of_passengers) values (?, ?)', ['2', '9']);
-        DB::insert('insert into vehicle_classes (class, number_of_passengers) values (?, ?)', ['3', '9']);
-        DB::insert('insert into vehicle_classes (class, number_of_passengers) values (?, ?)', ['5', '6']);
-        DB::insert('insert into vehicle_classes (class, number_of_passengers) values (?, ?)', ['7', '9']);
+        DB::insert('insert into vehicle_classes (class, name, number_of_passengers) values (?, ?, ?)', ['1', 'AUTO', '2']);
+        DB::insert('insert into vehicle_classes (class, name, number_of_passengers) values (?, ?, ?)', ['2', 'BUS', '9']);
+        DB::insert('insert into vehicle_classes (class, name, number_of_passengers) values (?, ?, ?)', ['3', 'BUSETA', '9']);
+        DB::insert('insert into vehicle_classes (class, name, number_of_passengers) values (?, ?, ?)', ['5', 'CAMIONETA', '6']);
+        DB::insert('insert into vehicle_classes (class, name, number_of_passengers) values (?, ?, ?)', ['7', 'MICROBUS', '9']);
     }
 
     /**

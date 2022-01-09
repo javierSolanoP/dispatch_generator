@@ -14,7 +14,13 @@
     <form action="{{ route('process') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <input type="file" name="dispatch" ><br>
-        <input type="submit" value="Procesar">
+        <div class="container">
+            <input type="submit" value="Procesar">
+            <form action="{{ route('generate') }}" method="POST">
+                @csrf
+                <input type="submit" value="Generar">
+            </form>
+        </div>
     </form>
 </body>
 </html>
