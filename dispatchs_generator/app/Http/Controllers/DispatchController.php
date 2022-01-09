@@ -15,13 +15,12 @@ use Maatwebsite\Excel\Facades\Excel;
 class DispatchController extends Controller
 {
     public function import(Request $request){
+
+        Dispatchs::getQuery()->delete();
         
         $request->file('dispatch')->storeAs('public', $request->file('dispatch')->getClientOriginalName());
-
        
         $collection = Excel::toCollection(new ImportsDispatchController, 'public/'.$request->file('dispatch')->getClientOriginalName());
-
-        $data = [];
 
         $modelMunicipality = DB::table('municipalities')
 
@@ -114,6 +113,10 @@ class DispatchController extends Controller
                                 $array[16] = $vehicle['class'];
                                 $array[18] = $vehicle['number_of_passengers'];
                                 $array['vehicle_class_id'] = $vehicle['id'];
+                            }else{
+                                $array[16] = 2;
+                                $array[18] = 9;
+                                $array['vehicle_class_id'] = 2;
                             }
                         }
                     }
@@ -128,35 +131,37 @@ class DispatchController extends Controller
                             }
                         }
                     }
-
-                    $data[] = $array;
                 }
             }
         }
 
-        // return $data;
-
-        foreach($data as $create){
+        foreach($collection as $matrix){
             
-            Dispatchs::create([
-                'invoice_number' => $create[0],
-                'name_route' => $create[1],
-                'date' => $create[2],
-                'hour' => $create[3],
-                'minute' => $create[4],
-                'usage_rate' => $create[14],
-                'plate' => $create[15],
-                'authorized_dispatch' => $create[9],
-                'type_of_dispatch' => $create[10],
-                'vehicle_class_id' => $create['vehicle_class_id'],
-                'enterprise_id' => $create['enterprise_id'],
-                'origin_municipality_id' => $create['origin_municipality_id'],
-                'destination_municipality_id' => $create['destination_municipality_id']
-            ]);
+            foreach($matrix as $array){
+                
+                Dispatchs::create([
+                    'invoice_number' => $array[0],
+                    'name_route' => $array[1],
+                    'date' => $array[2],
+                    'hour' => $array[3],
+                    'minute' => $array[4],
+                    'usage_rate' => $array[14],
+                    'plate' => $array[15],
+                    'authorized_dispatch' => $array[9],
+                    'type_of_dispatch' => $array[10],
+                    'vehicle_class_id' => $array['vehicle_class_id'],
+                    'enterprise_id' => $array['enterprise_id'],
+                    'origin_municipality_id' => $array['origin_municipality_id'],
+                    'destination_municipality_id' => $array['destination_municipality_id']
+                ]);
+
+            }
 
         }
 
-        return redirect()->route('home');
+        $confirm = true;
+
+        return redirect()->route('home', ['confirm' => $confirm]);
     }
 
     public function export(){

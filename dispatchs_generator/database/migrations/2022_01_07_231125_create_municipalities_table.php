@@ -52,14 +52,14 @@ class CreateMunicipalitiesTable extends Migration
         DB::insert('insert into municipalities (code, name, main, department_id) values (?, ?, ?, ?)', ['19622000', 'ROSAS', '0', '1']);
         DB::insert('insert into municipalities (code, name, main, department_id) values (?, ?, ?, ?)', ['19785000', 'SUCRE', '0', '1']);
         DB::insert('insert into municipalities (code, name, main, department_id) values (?, ?, ?, ?)', ['19318012', 'SAN AGUSTIN', '0', '1']);
-        DB::insert('insert into municipalities (code, name, main, department_id) values (?, ?, ?, ?)', ['19050007', 'SINAI', '0', '1']);
+        DB::insert('insert into municipalities (code, name, main, department_id) values (?, ?, ?, ?)', ['19050007', 'SINAI ARGELIA', '0', '1']);
         DB::insert('insert into municipalities (code, name, main, department_id) values (?, ?, ?, ?)', ['19780000', 'SUAREZ', '0', '1']);
         DB::insert('insert into municipalities (code, name, main, department_id) values (?, ?, ?, ?)', ['19392000', 'SIERRA', '0', '1']);
-        DB::insert('insert into municipalities (code, name, main, department_id) values (?, ?, ?, ?)', ['19698000', 'SANTANDER QUILICHAO', '0', '1']);
+        DB::insert('insert into municipalities (code, name, main, department_id) values (?, ?, ?, ?)', ['19698000', 'S QUILICHAO', '0', '1']);
         DB::insert('insert into municipalities (code, name, main, department_id) values (?, ?, ?, ?)', ['19743000', 'SILVIA', '0', '1']);
         DB::insert('insert into municipalities (code, name, main, department_id) values (?, ?, ?, ?)', ['19693004', 'SANTIAGO', '0', '1']);
         DB::insert('insert into municipalities (code, name, main, department_id) values (?, ?, ?, ?)', ['19100021', 'SAN LORENZO', '0', '1']);
-        DB::insert('insert into municipalities (code, name, main, department_id) values (?, ?, ?, ?)', ['19256000', 'TAMBO', '0', '1']);
+        DB::insert('insert into municipalities (code, name, main, department_id) values (?, ?, ?, ?)', ['19256000', 'EL TAMBO', '0', '1']);
         DB::insert('insert into municipalities (code, name, main, department_id) values (?, ?, ?, ?)', ['19807000', 'TIMBIO', '0', '1']);
         DB::insert('insert into municipalities (code, name, main, department_id) values (?, ?, ?, ?)', ['19824000', 'TOTORO', '0', '1']);
         DB::insert('insert into municipalities (code, name, main, department_id) values (?, ?, ?, ?)', ['19100005', 'CARMEN BOLIVAR', '0', '1']);

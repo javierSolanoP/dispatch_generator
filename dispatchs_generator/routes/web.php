@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('home');
 
 // Route::post('/send', [DispatchController::class, 'collection'])->name('process');
 Route::post('/send', [ControllersDispatchController::class, 'import'])->name('process');

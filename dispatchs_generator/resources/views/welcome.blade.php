@@ -20,5 +20,10 @@
         @csrf
         <input type="submit" value="Generar">
     </form>
+    @if (isset($_GET['confirm']))
+        <script>
+            alert("Se procesó correctamente, para generar el reporte de clic en el botón 'Generar'!")
+        </script>
+    @endif
 </body>
 </html>
