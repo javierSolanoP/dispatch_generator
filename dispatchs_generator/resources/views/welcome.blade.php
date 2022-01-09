@@ -11,16 +11,14 @@
     <header>
         <strong>Bienvenido, crack!</strong>
     </header>
-    <form action="{{ route('process') }}" method="POST" enctype="multipart/form-data">
+    <form class="send" action="{{ route('process') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <input type="file" name="dispatch" ><br>
-        <div class="container">
-            <input type="submit" value="Procesar">
-            <form action="{{ route('generate') }}" method="POST">
-                @csrf
-                <input type="submit" value="Generar">
-            </form>
-        </div>
+        <input type="submit" value="Procesar">
+    </form><br>
+    <form class="receive" action="{{ route('generate') }}" method="POST">
+        @csrf
+        <input type="submit" value="Generar">
     </form>
 </body>
 </html>
