@@ -44,7 +44,7 @@ class CreateMunicipalitiesTable extends Migration
         DB::insert('insert into municipalities (code, name, main, department_id) values (?, ?, ?, ?)', ['19397000', 'LA VEGA', '0', '1']);
         DB::insert('insert into municipalities (code, name, main, department_id) values (?, ?, ?, ?)', ['19450000', 'MERCADERES', '0', '1']);
         DB::insert('insert into municipalities (code, name, main, department_id) values (?, ?, ?, ?)', ['19473000', 'MORALES', '0', '1']);
-        DB::insert('insert into municipalities (code, name, main, department_id) values (?, ?, ?, ?)', ['19050006', 'PLATIADO', '0', '1']);
+        DB::insert('insert into municipalities (code, name, main, department_id) values (?, ?, ?, ?)', ['19050006', 'EL PLATEADO', '0', '1']);
         DB::insert('insert into municipalities (code, name, main, department_id) values (?, ?, ?, ?)', ['19585009', 'PALETARA', '0', '1']);
         DB::insert('insert into municipalities (code, name, main, department_id) values (?, ?, ?, ?)', ['19760000', 'PAISPAMBA', '0', '1']);
         DB::insert('insert into municipalities (code, name, main, department_id) values (?, ?, ?, ?)', ['19548000', 'PIENDAMO', '0', '1']);
@@ -54,7 +54,7 @@ class CreateMunicipalitiesTable extends Migration
         DB::insert('insert into municipalities (code, name, main, department_id) values (?, ?, ?, ?)', ['19318012', 'SAN AGUSTIN', '0', '1']);
         DB::insert('insert into municipalities (code, name, main, department_id) values (?, ?, ?, ?)', ['19050007', 'SINAI ARGELIA', '0', '1']);
         DB::insert('insert into municipalities (code, name, main, department_id) values (?, ?, ?, ?)', ['19780000', 'SUAREZ', '0', '1']);
-        DB::insert('insert into municipalities (code, name, main, department_id) values (?, ?, ?, ?)', ['19392000', 'SIERRA', '0', '1']);
+        DB::insert('insert into municipalities (code, name, main, department_id) values (?, ?, ?, ?)', ['19392000', 'LA SIERRA', '0', '1']);
         DB::insert('insert into municipalities (code, name, main, department_id) values (?, ?, ?, ?)', ['19698000', 'S QUILICHAO', '0', '1']);
         DB::insert('insert into municipalities (code, name, main, department_id) values (?, ?, ?, ?)', ['19743000', 'SILVIA', '0', '1']);
         DB::insert('insert into municipalities (code, name, main, department_id) values (?, ?, ?, ?)', ['19693004', 'SANTIAGO', '0', '1']);
@@ -87,7 +87,7 @@ class CreateMunicipalitiesTable extends Migration
 
         DB::insert('insert into municipalities (code, name, main, department_id) values (?, ?, ?, ?)', ['66001000', 'PEREIRA', '1', '7']);
 
-        DB::insert('insert into municipalities (code, name, main, department_id) values (?, ?, ?, ?)', ['18001000', 'FLORENCIA CAQUETA', '1', '8']);
+        DB::insert('insert into municipalities (code, name, main, department_id) values (?, ?, ?, ?)', ['18001000', 'FLORENCIA', '1', '8']);
         DB::insert('insert into municipalities (code, name, main, department_id) values (?, ?, ?, ?)', ['18753000', 'SAN VICENTE', '0', '8']);
         DB::insert('insert into municipalities (code, name, main, department_id) values (?, ?, ?, ?)', ['18592000', 'PUERTO RICO', '0', '8']);
 
