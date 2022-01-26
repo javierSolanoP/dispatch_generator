@@ -64,6 +64,28 @@ class DispatchController extends Controller
                                 $array[8] = $content->municipality_code;
                                 $array['destination_municipality_id'] = $content->id;
                             }
+                            
+                            if(strstr($array[$i], "TRANSITO")){
+
+                                if(!strstr($array[$i], "- BOGOTA") && !strstr($array[$i], "- CALI")){
+
+                                    $main['origin'] = 1;
+                                    $array[5] = 76;
+                                    $array[6] = 76001000;
+                                    $array['origin_municipality_id'] = 40; 
+
+                                    if(strstr($array[$i], "- $content->municipality")){
+
+                                        $array[$i] = "CALI - POPAYAN - $content->municipality";
+
+                                        $main['destination'] = $content->main;
+                                        $array[7] = $content->department_code;
+                                        $array[8] = $content->municipality_code;
+                                        $array['destination_municipality_id'] = $content->id;
+
+                                    }
+                                }
+                            }
 
                             if(strstr($array[$i], "- $content->municipality -")){
                                 $main['transition'] = $content->main;
@@ -106,17 +128,13 @@ class DispatchController extends Controller
                     $array[14] = $rate + $alcoholimetry;
 
                     if($i == 17){
-
+                        
                         foreach($modelVehicleClass as $vehicle){
 
-                            if(strstr($array[$i], $vehicle['name'])){
+                            if($array[$i] == $vehicle['name']){
                                 $array[16] = $vehicle['class'];
                                 $array[18] = $vehicle['number_of_passengers'];
                                 $array['vehicle_class_id'] = $vehicle['id'];
-                            }else{
-                                $array[16] = 2;
-                                $array[18] = 9;
-                                $array['vehicle_class_id'] = 2;
                             }
                         }
                     }

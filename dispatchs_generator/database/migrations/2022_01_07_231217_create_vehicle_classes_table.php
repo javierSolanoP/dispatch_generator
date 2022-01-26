@@ -24,6 +24,7 @@ class CreateVehicleClassesTable extends Migration
 
         DB::insert('insert into vehicle_classes (class, name, number_of_passengers) values (?, ?, ?)', ['1', 'AUTO', '2']);
         DB::insert('insert into vehicle_classes (class, name, number_of_passengers) values (?, ?, ?)', ['2', 'BUS', '9']);
+        DB::insert('insert into vehicle_classes (class, name, number_of_passengers) values (?, ?, ?)', ['2', 'BUS2P', '9']);
         DB::insert('insert into vehicle_classes (class, name, number_of_passengers) values (?, ?, ?)', ['3', 'BUSETA', '9']);
         DB::insert('insert into vehicle_classes (class, name, number_of_passengers) values (?, ?, ?)', ['5', 'CAMIONETA', '6']);
         DB::insert('insert into vehicle_classes (class, name, number_of_passengers) values (?, ?, ?)', ['7', 'MICROBUS', '9']);
